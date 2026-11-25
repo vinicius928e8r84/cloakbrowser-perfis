@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="luxury" data-lavish-annotate="off">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Um perfil copiado de um Mac abre no outro com tudo?</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/daisyui.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/themes.css">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.2.4/dist/index.global.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  p, li, h1, h2, h3, label, span, td, th { overflow-wrap: anywhere; }
+  pre { white-space: pre-wrap; word-break: break-all; }
+  .cmd { position: relative; }
+  .cmd button { position: absolute; top: .4rem; right: .4rem; }
+</style>
+</head>
+<body class="bg-base-100 text-base-content">
+<main class="max-w-3xl mx-auto p-6 space-y-8">
+
+<header class="space-y-2">
+  <p class="text-sm opacity-70">Mapa: aquecimento, uso com trava e perfis sincronizados entre dois Macs</p>
+  <h1 class="text-3xl font-bold">Um perfil copiado de um Mac abre no outro com tudo?</h1>
+  <p>Este é um teste à mão, com você e seu sócio nos dois Macs. A gente cria um perfil de teste no seu Mac, leva para o do sócio e confere item por item: abas, senhas, cookies, login, histórico, extensão e impressão digital. Nada aqui usa conta real.</p>
+  <div class="alert alert-success text-sm"><span><b>Rodada 2:</b> suas respostas entraram (lista "Já decidido"). Olhando o seu Mac achei uma coisa que deixa o teste mais curto e sem segredo nenhum para passar de um Mac ao outro (abaixo). Não há pergunta nova: falta só fazer o roteiro e preencher "O que vocês viram" no fim.</span></div>
+</header>
+
+<section class="card card-border bg-base-200 border-success">
+  <div class="card-body space-y-2">
+    <h2 class="card-title">O que achei no seu Mac (só lendo)</h2>
+    <ul class="list-disc pl-5 space-y-1">
+      <li>O seu Mac não tem a chave "Chromium Safe Storage" no Keychain, mesmo depois de abrir os dois perfis hoje. O navegador procura essa chave, mas não a usa.</li>
+      <li>O motivo: a peça que o Manager usa para abrir o navegador sempre liga uma opção de teste que troca a chave do Keychain por uma chave fixa, igual em qualquer computador. O CloakBrowser não desliga essa opção.</li>
+      <li><b>Consequência:</b> as senhas e os cookies de todos os perfis já estão trancados com a mesma chave nos dois Macs. Então não precisa copiar chave nenhuma, e os passos de trocar a chave do Mac do sócio saíram do roteiro.</li>
+      <li><b>O lado ruim:</b> essa chave fixa é pública. Quem pegar a pasta de um perfil consegue ler as senhas dele. Isso já é assim hoje, e vai para a decisão "Onde fica a chave da criptografia e como o outro usuário a recebe?".</li>
+      <li>O teste confirma isso na prática: se a senha salva aparecer no Mac do sócio, está provado.</li>
+      <li>Outros fatos: seu Mac tem macOS 15.6 com chip M2. O Manager roda a partir do código, na versão 0.2.2, e o navegador vem de uma pasta separada (a versão 145).</li>
+    </ul>
+  </div>
+</section>
+
+<section class="space-y-2">
+  <h2 class="text-xl font-bold">Já decidido</h2>
+  <ul class="list-disc pl-5 space-y-1">
+    <li>O seu Mac é o "A": o perfil de teste nasce nele e vai para o do sócio ("B").</li>
+    <li>O uso é um ambiente de trabalho dividido: qualquer um dos dois cria perfis, e os dois veem e usam todos. Isso vai para o "catálogo de perfis compartilhado" do mapa.</li>
+    <li>"Cookies portáteis" fica ligado no perfil de teste.</li>
+    <li>Pode ler coisas no seu Mac pela VPS, só leitura.</li>
+    <li>Plano B e devolver a chave ao Mac do sócio: não fazem mais sentido, já que ninguém mexe no Keychain.</li>
+    <li>Do mapa: só Macs; nunca apagar perfis; não trocar a versão do navegador; medir tempo de abrir e memória.</li>
+  </ul>
+</section>
+
+<!-- ============ ROTEIRO ============ -->
+<section class="space-y-4">
+  <h2 class="text-2xl font-bold">Roteiro do teste (uns 30 minutos)</h2>
+  <p class="text-sm">Os comandos vão no app <b>Terminal</b> (Aplicativos &gt; Utilitários). Clique em "Copiar" e cole no Terminal. Nenhum comando apaga nada nem mexe nos perfis que já existem. No fim, preencha o formulário "O que vocês viram".</p>
+
+  <div class="card card-border bg-base-200"><div class="card-body space-y-2">
+    <h3 class="card-title">Passo 0. No Mac do sócio: conferir versões</h3>
+    <p class="text-sm">No seu Mac eu já li. No do sócio, com o Manager aberto pelo menos uma vez:</p>
+    <div class="cmd"><button type="button" class="btn btn-xs copiar">Copiar</button><pre class="bg-base-300 p-3 rounded text-xs">L="$HOME/Library/Application Support/CloakBrowser Manager/logs/manager.log"
+echo "macOS: $(sw_vers -productVersion)  chip: $(sysctl -n machdep.cpu.brand_string)"
+grep -o 'manager=v[^ ]*' "$L" | tail -1
+grep -o 'Binary ready: [^|]*' "$L" | tail -1
+grep -o 'Using local binary override: .*Chromium.app' "$L" | tail -1 | sed "s#$HOME#~#"
+security find-generic-password -s "Chromium Safe Storage" &gt;/dev/null 2&gt;&amp;1 &amp;&amp; echo "TEM a chave Chromium Safe Storage" || echo "sem a chave Chromium Safe Storage (igual ao seu Mac)"</pre></div>
+    <p class="text-sm"><b>Observe:</b> no seu Mac deu <code>manager=v0.2.2-1-ga5327f0</code> e <code>Binary ready: tier=pro version=156.0.8078.47.1</code>. Se no do sócio for diferente, anote: é um achado (as versões precisam ser iguais para um perfil ir e voltar). A última linha deve dizer "sem a chave". Nenhum desses comandos mostra senha.</p>
+  </div></div>
+
+  <div class="card card-border bg-base-200"><div class="card-body space-y-2">
+    <h3 class="card-title">Passo 1. Nos dois Macs: a extensão de teste no mesmo lugar</h3>
+    <p class="text-sm">Uma extensão mínima, feita aqui: um contador que soma 1 cada vez que você clica no ícone e guarda o número. Fica em <code>/Users/Shared</code>, que tem o mesmo caminho nos dois Macs.</p>
+    <div class="cmd"><button type="button" class="btn btn-xs copiar">Copiar</button><pre class="bg-base-300 p-3 rounded text-xs">mkdir -p /Users/Shared/cloak-teste/contador &amp;&amp; cd /Users/Shared/cloak-teste/contador
+cat &gt; manifest.json &lt;&lt;'EOF'
+{"manifest_version":3,"name":"Contador de teste","version":"1.0","permissions":["storage"],"action":{"default_popup":"popup.html"}}
+EOF
+cat &gt; popup.html &lt;&lt;'EOF'
+&lt;!doctype html&gt;&lt;meta charset="utf-8"&gt;&lt;body style="font:20px sans-serif;padding:12px;width:160px"&gt;Contador: &lt;b id="n"&gt;?&lt;/b&gt;&lt;script src="popup.js"&gt;&lt;/script&gt;&lt;/body&gt;
+EOF
+cat &gt; popup.js &lt;&lt;'EOF'
+chrome.storage.local.get({n:0}, r =&gt; { const n = r.n + 1; chrome.storage.local.set({n}); document.getElementById('n').textContent = n; });
+EOF
+ls /Users/Shared/cloak-teste/contador</pre></div>
+    <p class="text-sm"><b>Observe:</b> aparecem três arquivos.</p>
+  </div></div>
+
+  <div class="card card-border bg-base-200"><div class="card-body space-y-2">
+    <h3 class="card-title">Passo 2. No seu Mac: criar o perfil de teste e usá-lo</h3>
+    <ol class="list-decimal pl-5 space-y-1 text-sm">
+      <li>No Manager, crie um perfil chamado <b>teste-viagem</b>. Deixe "restaurar sessão" ligado e ligue "Cookies portáteis". Em extensões, adicione o caminho <code>/Users/Shared/cloak-teste/contador</code>.</li>
+      <li>Prepare um cronômetro (o do celular). Clique em Abrir e pare o cronômetro quando a janela estiver pronta para usar. Esse é o <b>tempo de abrir no seu Mac</b>.</li>
+      <li><b>Cookie:</b> abra <code>https://httpbin.org/response-headers?Set-Cookie=teste%3Dviagem%3B%20Max-Age%3D2592000</code> e depois <code>https://httpbin.org/cookies</code>. Deve aparecer <code>"teste": "viagem"</code>.</li>
+      <li><b>Login e senha:</b> abra <code>https://the-internet.herokuapp.com/login</code> (um site público de teste) e entre com usuário <code>tomsmith</code> e senha <code>SuperSecretPassword!</code>. Quando o navegador perguntar, clique em <b>Salvar senha</b>.</li>
+      <li><b>Impressão digital:</b> abra <code>https://abrahamjuliot.github.io/creepjs/</code>, espere carregar e anote o <b>FP ID</b> do topo. Abra <code>https://browserleaks.com/webgl</code> e anote o "Unmasked Renderer". Abra <code>https://browserleaks.com/javascript</code> e anote o "User Agent" e o fuso.</li>
+      <li><b>Extensão:</b> clique no ícone do Contador (no quebra-cabeça das extensões) três vezes. Deve mostrar 3.</li>
+      <li><b>Abas:</b> deixe três abas abertas: httpbin cookies, a página logada do the-internet e o creepjs.</li>
+      <li><b>Memória:</b> com só esse perfil aberto, espere 30 segundos e rode o comando abaixo. Anote o resultado.</li>
+    </ol>
+    <div class="cmd"><button type="button" class="btn btn-xs copiar">Copiar</button><pre class="bg-base-300 p-3 rounded text-xs">ps -axo rss=,command= | grep '[C]hromium.app/' | awk '{s+=$1; n++} END {printf "%d processos, %.0f MB\n", n, s/1024}'</pre></div>
+    <ol class="list-decimal pl-5 space-y-1 text-sm" start="9">
+      <li>Feche o perfil pelo botão <b>Parar</b> do Manager e espere ele sair de "fechando".</li>
+    </ol>
+  </div></div>
+
+  <div class="card card-border bg-base-200"><div class="card-body space-y-2">
+    <h3 class="card-title">Passo 3. No seu Mac: empacotar o perfil (sem caches nem travas)</h3>
+    <div class="cmd"><button type="button" class="btn btn-xs copiar">Copiar</button><pre class="bg-base-300 p-3 rounded text-xs">D="$HOME/Library/Application Support/CloakBrowser Manager"
+T=$(mktemp -d); cp "$D"/profiles.db* "$T"/
+ID=$(sqlite3 "$T/profiles.db" "select id from profiles where name='teste-viagem'")
+echo "id do perfil: $ID"
+sqlite3 -header "$T/profiles.db" "select fingerprint_seed, screen_width, screen_height, gpu_family, timezone, locale, proxy, geoip, color_scheme, humanize, portable_cookies, restore_session, extension_paths from profiles where id='$ID'"
+rm -rf "$T"
+du -sh "$D/profiles/$ID"
+tar -czf ~/Desktop/teste-viagem.tgz --exclude 'Singleton*' --exclude 'Cache' --exclude 'Code Cache' --exclude 'GPUCache' --exclude 'last_screenshot.jpg' -C "$D/profiles/$ID" .
+ls -lh ~/Desktop/teste-viagem.tgz</pre></div>
+    <p class="text-sm"><b>Observe:</b> anote o tamanho da pasta (<code>du</code>) e do arquivo <code>.tgz</code>. A tabela do meio são as configurações que o perfil do Mac do sócio precisa repetir (o comando lê uma cópia do banco, que é apagada logo depois). Mande o <code>teste-viagem.tgz</code>, que fica na Mesa, para o Mac do sócio por AirDrop. O perfil do seu Mac não muda.</p>
+  </div></div>
+
+  <div class="card card-border bg-base-200"><div class="card-body space-y-2">
+    <h3 class="card-title">Passo 4. No Mac do sócio: receber e abrir</h3>
+    <ol class="list-decimal pl-5 space-y-1 text-sm">
+      <li>No Manager do sócio, crie um perfil <b>teste-viagem</b> com as mesmas configurações da tabela do passo 3: mesma semente (seed), tela, GPU, fuso, idioma, "Cookies portáteis" ligado, "restaurar sessão" ligado e a extensão <code>/Users/Shared/cloak-teste/contador</code>. <b>Não clique em Abrir ainda.</b></li>
+      <li>Com o <code>.tgz</code> na Mesa, rode:</li>
+    </ol>
+    <div class="cmd"><button type="button" class="btn btn-xs copiar">Copiar</button><pre class="bg-base-300 p-3 rounded text-xs">D="$HOME/Library/Application Support/CloakBrowser Manager"
+T=$(mktemp -d); cp "$D"/profiles.db* "$T"/
+ID=$(sqlite3 "$T/profiles.db" "select id from profiles where name='teste-viagem'")
+echo "id do perfil: $ID"
+sqlite3 -header "$T/profiles.db" "select fingerprint_seed, screen_width, screen_height, gpu_family, timezone, locale, proxy, geoip, color_scheme, humanize, portable_cookies, restore_session, extension_paths from profiles where id='$ID'"
+rm -rf "$T"
+mkdir -p "$D/profiles/$ID" &amp;&amp; tar -xzf ~/Desktop/teste-viagem.tgz -C "$D/profiles/$ID" &amp;&amp; echo "copiado"</pre></div>
+    <ol class="list-decimal pl-5 space-y-1 text-sm" start="3">
+      <li>Confira que a tabela é igual à do seu Mac.</li>
+      <li>Cronômetro: clique em Abrir e pare quando a janela estiver pronta. Esse é o <b>tempo de abrir no Mac do sócio</b>. Se o macOS pedir alguma permissão de Keychain, anote.</li>
+      <li>Confira: as três abas voltaram? O cookie aparece em <code>httpbin.org/cookies</code>? Continua logado no the-internet? A senha aparece em <code>chrome://password-manager/passwords</code>? O histórico aparece em <code>chrome://history</code>? A extensão está lá, e o Contador mostra 4 no próximo clique?</li>
+      <li>Impressão digital: os mesmos três sites do passo 2 (FP ID do creepjs, "Unmasked Renderer", User Agent e fuso).</li>
+      <li>Memória: espere 30 segundos e rode o comando de memória do passo 2.</li>
+      <li>Feche com <b>Parar</b>. Os perfis de teste podem ficar onde estão.</li>
+    </ol>
+  </div></div>
+</section>
+
+<!-- ============ RESULTADO ============ -->
+<form id="resultado" class="space-y-6" data-lavish-question="resultado">
+  <h2 class="text-2xl font-bold">O que vocês viram</h2>
+  <p class="text-sm">Preencha depois do teste. Deixe em branco o que não fizeram.</p>
+
+  <div class="card card-border bg-base-200"><div class="card-body space-y-2">
+    <h3 class="card-title">Passo 0 (Mac do sócio)</h3>
+    <textarea name="versoes-socio" class="textarea textarea-sm w-full" rows="3" placeholder="Cole aqui o que o passo 0 mostrou no Mac do sócio"></textarea>
+  </div></div>
+
+  <div class="card card-border bg-base-200"><div class="card-body space-y-2 overflow-x-auto">
+    <h3 class="card-title">O que chegou ao Mac do sócio</h3>
+    <table class="table table-sm">
+      <thead><tr><th>Item</th><th>Resultado</th></tr></thead>
+      <tbody id="itens"></tbody>
+    </table>
+  </div></div>
+
+  <div class="card card-border bg-base-200"><div class="card-body space-y-2">
+    <h3 class="card-title">Impressão digital, tempo e memória</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+      <input type="text" name="fp-meu" class="input input-sm w-full" placeholder="Seu Mac: FP ID do creepjs">
+      <input type="text" name="fp-socio" class="input input-sm w-full" placeholder="Mac do sócio: FP ID do creepjs">
+      <input type="text" name="webgl-meu" class="input input-sm w-full" placeholder="Seu Mac: Unmasked Renderer">
+      <input type="text" name="webgl-socio" class="input input-sm w-full" placeholder="Mac do sócio: Unmasked Renderer">
+      <input type="text" name="ua-meu" class="input input-sm w-full" placeholder="Seu Mac: User Agent e fuso">
+      <input type="text" name="ua-socio" class="input input-sm w-full" placeholder="Mac do sócio: User Agent e fuso">
+      <input type="text" name="tempo-meu" class="input input-sm w-full" placeholder="Seu Mac: segundos para abrir">
+      <input type="text" name="tempo-socio" class="input input-sm w-full" placeholder="Mac do sócio: segundos para abrir">
+      <input type="text" name="memoria-meu" class="input input-sm w-full" placeholder="Seu Mac: processos e MB">
+      <input type="text" name="memoria-socio" class="input input-sm w-full" placeholder="Mac do sócio: processos e MB">
+      <input type="text" name="tamanho" class="input input-sm w-full sm:col-span-2" placeholder="Tamanho da pasta (du) e do .tgz">
+    </div>
+  </div></div>
+
+  <div class="card card-border bg-base-200"><div class="card-body space-y-2">
+    <h3 class="card-title">O resto</h3>
+    <textarea name="observacoes" class="textarea textarea-sm w-full" rows="4" placeholder="Qualquer outra coisa: pedidos do macOS, erros, algo estranho, passos que não funcionaram"></textarea>
+  </div></div>
+
+  <div class="flex items-center gap-3 flex-wrap">
+    <button type="submit" class="btn btn-primary">Enviar o que vimos</button>
+    <span id="estado-resultado" class="text-sm" role="status" aria-live="polite"></span>
+  </div>
+</form>
+
+</main>
+<script>
+  document.querySelectorAll('.copiar').forEach(function (botao) {
+    botao.addEventListener('click', async function () {
+      const texto = botao.parentElement.querySelector('pre').textContent;
+      try { await navigator.clipboard.writeText(texto); botao.textContent = 'Copiado'; }
+      catch (e) { botao.textContent = 'Selecione e copie à mão'; }
+      setTimeout(function () { botao.textContent = 'Copiar'; }, 2000);
+    });
+  });
+
+  const itens = [
+    ['abas', 'Abas abertas voltaram'],
+    ['cookie', 'Cookie teste=viagem (httpbin)'],
+    ['login', 'Continua logado no the-internet'],
+    ['senha', 'Senha salva aparece'],
+    ['historico', 'Histórico'],
+    ['extensao', 'Extensão aparece e o Contador continua de 3'],
+    ['favoritos', 'Favoritos']
+  ];
+  const corpo = document.getElementById('itens');
+  itens.forEach(function (item) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td>' + item[1] + '</td><td><select class="select select-xs" name="' + item[0] + '">' +
+      '<option value="">—</option><option>veio</option><option>não veio</option><option>em parte</option></select></td>';
+    corpo.appendChild(tr);
+  });
+
+  const resultado = document.getElementById('resultado');
+  const estado = document.getElementById('estado-resultado');
+  resultado.addEventListener('submit', function (evento) {
+    evento.preventDefault();
+    const dados = new FormData(resultado);
+    const linhas = [];
+    const registro = {};
+    for (const [chave, valor] of dados.entries()) {
+      const v = String(valor).trim();
+      if (!v) continue;
+      registro[chave] = v;
+      linhas.push(chave + ': ' + v);
+    }
+    if (!linhas.length) { estado.textContent = 'Nada preenchido ainda.'; return; }
+    const texto = 'Resultado do teste do ticket "Um perfil copiado de um Mac abre no outro com tudo?":\n' + linhas.join('\n');
+    if (!window.lavish || typeof window.lavish.queuePrompt !== 'function') {
+      estado.textContent = 'Lavish não está ativo. Copie e mande: ' + texto;
+      return;
+    }
+    window.lavish.queuePrompt(texto, { tag: 'resultado', text: 'O que vimos no teste', element: resultado, queueKey: 'resultado', data: registro });
+    window.lavish.sendQueuedPrompts();
+    estado.textContent = 'Enviado.';
+  });
+</script>
+</body>
+</html>
