@@ -1,0 +1,479 @@
+<!doctype html>
+<!-- PROTÓTIPO DESCARTÁVEL: três rascunhos da tela do lote de aquecimento, trocados por ?variant=A|B|C e pela barra de baixo. Dados falsos, nada é salvo. -->
+<html lang="pt-BR" data-lavish-annotate="on">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Protótipo: lote de aquecimento</title>
+<style>
+  :root{--s0:#0a0a0a;--s1:#111;--s2:#1a1a1a;--s3:#222;--s4:#2a2a2a;--b:#2a2a2a;--bh:#3a3a3a;--ac:#6366f1;--ach:#818cf8;
+    --g1:#f3f4f6;--g2:#e5e7eb;--g3:#9ca3af;--g4:#6b7280;--ok:#34d399;--warn:#fbbf24;--err:#f87171;--info:#60a5fa}
+  *{box-sizing:border-box} body{margin:0;background:var(--s0);color:var(--g2);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;font-size:14px;line-height:1.45}
+  h1,h2,h3{margin:0} a{color:var(--ach)}
+  .doc{max-width:1180px;margin:0 auto;padding:24px 20px 120px}
+  .lead{color:var(--g3);max-width:860px}
+  .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;background:var(--s3);color:var(--g3)}
+  .proto-note{margin:14px 0;padding:10px 14px;border:1px dashed var(--warn);border-radius:8px;color:var(--warn);font-size:13px}
+  /* moldura do app */
+  .app{height:620px;border:1px solid var(--b);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;background:var(--s0);position:relative;min-width:0}
+  .app .body{flex:1;display:flex;min-height:0}
+  .side{width:270px;flex-shrink:0;border-right:1px solid var(--b);background:var(--s1);display:flex;flex-direction:column;min-width:0}
+  .side .hd{padding:14px;border-bottom:1px solid var(--b)}
+  .side .title{font-size:13px;font-weight:600;display:flex;gap:8px;align-items:center;margin-bottom:10px}
+  .side .list{flex:1;overflow:auto;padding:8px}
+  .row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;border:1px solid transparent;margin-bottom:3px;min-width:0}
+  .row:hover{background:var(--s2)} .row.sel{background:var(--s3);border-color:var(--bh)}
+  .row .nm{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
+  .row .meta{font-size:11px;color:var(--g4);white-space:nowrap}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--g4);flex-shrink:0} .dot.run{background:var(--ok)} .dot.lock{background:var(--warn)}
+  .main{flex:1;display:flex;flex-direction:column;min-width:0;position:relative}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 14px;border-bottom:1px solid var(--b);background:var(--s1);min-height:44px}
+  .content{flex:1;overflow:auto;padding:18px;min-width:0}
+  .btn{padding:6px 12px;border-radius:6px;font-size:13px;font-weight:500;border:0;cursor:pointer;font-family:inherit}
+  .bp{background:var(--ac);color:#fff}.bp:hover{background:var(--ach)} .bs{background:var(--s3);color:var(--g2)}.bs:hover{background:var(--s4)}
+  .bd{background:rgba(220,38,38,.2);color:var(--err)} .bl{background:none;color:var(--ach);padding:2px 4px;text-decoration:underline;font-size:12px}
+  .bsm{padding:3px 8px;font-size:12px}
+  .input{width:100%;height:32px;background:var(--s2);border:1px solid var(--b);border-radius:6px;padding:0 10px;color:var(--g1);font-size:12px}
+  .chip{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:2px 8px;border-radius:999px;white-space:nowrap}
+  .c-fila{background:var(--s3);color:var(--g3)} .c-run{background:rgba(99,102,241,.2);color:var(--ach)} .c-ok{background:rgba(52,211,153,.15);color:var(--ok)}
+  .c-nao{background:rgba(251,191,36,.12);color:var(--warn)} .c-pulo{background:rgba(251,191,36,.12);color:var(--warn)} .c-err{background:rgba(248,113,113,.15);color:var(--err)}
+  .c-wait{background:rgba(96,165,250,.15);color:var(--info)}
+  .bar{height:6px;background:var(--s3);border-radius:3px;overflow:hidden} .bar>i{display:block;height:100%;background:var(--ac)}
+  .bar.big{height:10px}
+  table.q{width:100%;border-collapse:collapse;font-size:13px} table.q td,table.q th{padding:8px;border-bottom:1px solid var(--b);text-align:left;vertical-align:top}
+  table.q th{font-size:11px;color:var(--g4);font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+  .msg{font-size:12px;color:var(--g3);margin-top:3px} .msg.e{color:var(--err)} .msg.w{color:var(--warn)}
+  .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
+  .card{background:var(--s1);border:1px solid var(--b);border-radius:8px;padding:14px;min-width:0}
+  .grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+  .banner{display:flex;align-items:center;gap:8px;justify-content:center;padding:6px 14px;font-size:12px;border-bottom:1px solid}
+  .banner.e{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:#fca5a5} .banner.w{background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.3);color:var(--warn)}
+  .pill{display:flex;align-items:center;gap:8px;padding:4px 10px;border-radius:999px;background:var(--s3);border:1px solid var(--bh);font-size:12px;cursor:pointer;white-space:nowrap}
+  .overlay{position:absolute;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:5}
+  .modal{width:min(720px,92%);max-height:92%;overflow:auto;background:var(--s1);border:1px solid var(--bh);border-radius:12px;padding:18px}
+  .steps{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap} .steps span{font-size:11px;padding:3px 10px;border-radius:999px;background:var(--s3);color:var(--g4)} .steps span.on{background:var(--ac);color:#fff}
+  .drop{position:absolute;right:14px;top:50px;width:min(460px,80%);max-height:520px;overflow:auto;background:var(--s1);border:1px solid var(--bh);border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.6);padding:12px;z-index:4}
+  .timeline{display:flex;gap:4px;margin:10px 0} .timeline b{flex:1;height:22px;border-radius:4px;background:var(--s3);font-size:10px;display:flex;align-items:center;justify-content:center;color:var(--g4);font-weight:500;min-width:0;overflow:hidden}
+  .timeline b.d{background:rgba(52,211,153,.2);color:var(--ok)} .timeline b.n{background:var(--ac);color:#fff} .timeline b.x{background:rgba(248,113,113,.2);color:var(--err)}
+  .sim{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0;font-size:12px;color:var(--g3)}
+  .state{font-family:ui-monospace,Consolas,monospace;font-size:11px;color:var(--g4);background:var(--s1);border:1px solid var(--b);border-radius:8px;padding:8px 10px;margin-top:8px;white-space:pre-wrap;max-height:120px;overflow:auto}
+  /* barra de troca */
+  #switcher{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);display:flex;align-items:center;gap:6px;background:#fff;color:#111;border-radius:999px;padding:6px 8px;box-shadow:0 6px 24px rgba(0,0,0,.5);z-index:50;font-size:13px;font-weight:600}
+  #switcher button{border:0;background:#eee;border-radius:999px;width:30px;height:30px;cursor:pointer;font-size:15px}
+  #switcher span{padding:0 10px;white-space:nowrap}
+  /* perguntas */
+  section.round{margin-top:34px} section.round h2{font-size:18px;margin-bottom:6px}
+  .settled li,.later li{margin:4px 0;color:var(--g3)}
+  .qf{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:14px 16px;margin:12px 0}
+  .qf h3{font-size:15px;margin-bottom:4px} .qf .why{font-size:12.5px;color:var(--g3);margin-bottom:8px}
+  .qf label{display:block;padding:5px 8px;border-radius:6px;cursor:pointer} .qf label:hover{background:var(--s2)}
+  .qf .rec{font-size:11px;color:var(--ok);margin-left:6px;font-weight:600}
+  .qf textarea{width:100%;min-height:44px;margin-top:6px;background:var(--s2);border:1px solid var(--b);border-radius:6px;color:var(--g1);padding:6px 8px;font-family:inherit;font-size:13px}
+  .qf .foot{display:flex;gap:10px;align-items:center;margin-top:8px} .qf .st{font-size:12px;color:var(--g4)} .qf .st.q{color:var(--ok)}
+</style>
+</head>
+<body>
+<div class="doc">
+  <span class="tag">Mapa: aquecimento, uso com trava e perfis sincronizados · ticket "Como o lote de aquecimento mostra progresso e erros?"</span>
+  <h1 style="font-size:24px;margin:10px 0 6px">Como o lote de aquecimento aparece na tela</h1>
+  <p class="lead">Três rascunhos diferentes da mesma tela, no visual do Manager. Troque entre eles pela barra branca embaixo (ou pelas setas ← →). Aperte <b>Próximo passo</b> para ver o lote andar: um perfil conta, um está com o outro usuário, um tem o proxy fora, um pega um site fora do ar, um espera vaga na licença. Teste também <b>Parar</b>. Depois responda as perguntas abaixo do rascunho; dá para marcar qualquer pedaço da tela e comentar.</p>
+  <div class="proto-note">Rascunho descartável: nomes, sites e números são inventados; nenhum botão faz nada de verdade além de simular.</div>
+
+  <div class="sim">
+    <button class="btn bp bsm" id="simNext" type="button">Próximo passo ▸</button>
+    <button class="btn bs bsm" id="simAuto" type="button">Andar sozinho</button>
+    <button class="btn bs bsm" id="simReset" type="button">Recomeçar</button>
+    <span id="simInfo"></span>
+  </div>
+  <div class="app" id="app"></div>
+  <div class="state" id="state"></div>
+
+  <section class="round">
+    <h2>Já decidido (não precisa responder)</h2>
+    <ul class="settled">
+      <li>Um perfil por vez no lote; cada um leva uns 10 minutos, de 5 a 8 sites ("O que é um perfil aquecido…").</li>
+      <li>Um aquecimento conta quando chega ao fim e visita pelo menos metade dos sites; parado no meio ou com falha não muda a marca.</li>
+      <li>Aquecer conta como uso: pega a trava, roda neste Mac, e o lote pula, avisando, os perfis que estão com o outro usuário.</li>
+      <li>Ao terminar cada perfil, o Manager envia a versão nova e só então solta a trava (modelo de empréstimo).</li>
+      <li>Tudo em português.</li>
+    </ul>
+  </section>
+
+  <section class="round" id="perguntas">
+    <h2>Esta rodada</h2>
+    <p class="lead">Marque uma opção em cada pergunta (a recomendada está indicada), escreva se quiser, e aperte <b>Guardar resposta</b>. No fim, aperte <b>Send to Agent</b> (no painel do Lavish) para me mandar tudo de uma vez. Pode deixar alguma em branco.</p>
+
+    <form class="qf" data-lavish-question="q1-variante">
+      <h3>1. Qual rascunho fica mais perto do que você quer?</h3>
+      <div class="why">A: uma tela própria do lote, com a lista e o andamento lado a lado. B: um assistente em passos (escolher, confirmar, acompanhar, resumo). C: o lote roda por trás; você segue usando o Manager e vê o andamento num botão no topo e em cada perfil da lista.</div>
+      <label><input type="radio" name="resposta" value="A: tela própria do lote"> A: tela própria do lote</label>
+      <label><input type="radio" name="resposta" value="B: assistente em passos"> B: assistente em passos</label>
+      <label><input type="radio" name="resposta" value="C: lote por trás, com botão no topo"> C: lote por trás, com botão no topo<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="Mistura (explico abaixo)"> Mistura (explico abaixo, por exemplo "a escolha do B com o andamento do C")</label>
+      <textarea name="nota" placeholder="Comentário (opcional)"></textarea>
+      <div class="foot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q2-escolher">
+      <h3>2. Como você escolhe os perfis do lote?</h3>
+      <div class="why">Perfis com o outro usuário aparecem na lista, marcados com cadeado; se você escolher um, o lote tenta e pula.</div>
+      <label><input type="radio" name="resposta" value="Caixinhas na lista, mais atalhos: por etiqueta e 'não aquecidos há 7 dias'"> Caixinhas na lista, mais atalhos: "por etiqueta" e "não aquecidos há 7 dias"<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="Só caixinhas na lista"> Só caixinhas na lista</label>
+      <label><input type="radio" name="resposta" value="Só por etiqueta"> Só por etiqueta (aquece todos de uma etiqueta)</label>
+      <textarea name="nota" placeholder="Comentário (opcional)"></textarea>
+      <div class="foot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q3-usar-junto">
+      <h3>3. Enquanto o lote roda, você pode usar outros perfis neste Mac?</h3>
+      <div class="why">Cada navegador aberto ocupa uma vaga da licença; usar junto pode fazer o lote esperar vaga.</div>
+      <label><input type="radio" name="resposta" value="Sim, livre; o lote espera vaga se faltar"> Sim, livre; se faltar vaga, o lote espera<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="Não: o Manager trava enquanto o lote roda"> Não: o Manager fica só no lote até ele acabar</label>
+      <textarea name="nota" placeholder="Comentário (opcional)"></textarea>
+      <div class="foot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q4-janela">
+      <h3>4. A janela do navegador que está aquecendo aparece?</h3>
+      <div class="why">Esconder a janela (rodar sem tela) pode mudar o que os sites veem do navegador; por isso não está entre as opções.</div>
+      <label><input type="radio" name="resposta" value="Abre normal, e a tela do lote mostra a prévia e o site atual"> Abre normal, como quando você abre um perfil; a tela do lote mostra o site atual e uma prévia<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="Abre minimizada"> Abre minimizada, para não atrapalhar</label>
+      <textarea name="nota" placeholder="Comentário (opcional). E se você clicar ou digitar nessa janela no meio do aquecimento?"></textarea>
+      <div class="foot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q5-parar">
+      <h3>5. Como se para o lote no meio?</h3>
+      <div class="why">"Parar agora" fecha o perfil que está aquecendo (esse não conta), envia a versão e solta a trava. "Parar depois deste" deixa o atual terminar e cancela o resto.</div>
+      <label><input type="radio" name="resposta" value="Os dois botões: Parar depois deste e Parar agora"> Os dois botões: "Parar depois deste" e "Parar agora"<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="Só Parar agora"> Só "Parar agora"</label>
+      <label><input type="radio" name="resposta" value="Também Pausar e continuar depois"> Os dois, e mais "Pausar" (continua depois de onde parou)</label>
+      <textarea name="nota" placeholder="Comentário (opcional)"></textarea>
+      <div class="foot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q6-outro-usuario">
+      <h3>6. Perfil que está com o outro usuário: o lote tenta de novo?</h3>
+      <div class="why">A mensagem diz "Com o outro usuário desde 14:02. Pulado." O lote nunca força a liberação.</div>
+      <label><input type="radio" name="resposta" value="Tenta uma vez de novo no fim do lote; se seguir travado, pula"> Tenta uma vez de novo no fim do lote; se seguir travado, pula<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="Pula e pronto"> Pula e pronto</label>
+      <label><input type="radio" name="resposta" value="Espera até ele soltar"> Espera até o outro soltar, e só então segue</label>
+      <textarea name="nota" placeholder="Comentário (opcional)"></textarea>
+      <div class="foot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q7-licenca">
+      <h3>7. A licença está sem vaga (navegadores demais abertos). O que o lote faz?</h3>
+      <div class="why">A vaga pode estar ocupada por você neste Mac ou pelo outro usuário no outro Mac. A mensagem diz quantos estão abertos e o que fazer: "feche um perfil para liberar uma vaga".</div>
+      <label><input type="radio" name="resposta" value="Espera vaga até 10 minutos, depois pula este perfil e segue"> Espera vaga até 10 minutos; depois pula este perfil e segue com o próximo<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="Espera vaga sem limite"> Espera vaga sem limite de tempo</label>
+      <label><input type="radio" name="resposta" value="Para o lote inteiro"> Para o lote inteiro e avisa</label>
+      <textarea name="nota" placeholder="Comentário (opcional)"></textarea>
+      <div class="foot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q8-proxy">
+      <h3>8. O proxy de um perfil não responde. O que acontece?</h3>
+      <div class="why">O Manager testa o proxy antes de abrir (ele já precisa disso para saber o país e sortear da lista certa). Se falhar, nada é aberto e a marca não muda. A mensagem: "O proxy deste perfil não respondeu. Confira o proxy no perfil e aqueça de novo."</div>
+      <label><input type="radio" name="resposta" value="Pula e segue; no resumo, botão Aquecer de novo os que falharam"> Pula e segue; no fim, um botão "Aquecer de novo os que não contaram"<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="Tenta de novo sozinho no fim do lote"> Tenta de novo sozinho no fim do lote, uma vez</label>
+      <label><input type="radio" name="resposta" value="Para o lote"> Para o lote e avisa</label>
+      <textarea name="nota" placeholder="Comentário (opcional)"></textarea>
+      <div class="foot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q9-site-fora">
+      <h3>9. Um site da lista está fora do ar. O que acontece?</h3>
+      <div class="why">Não é erro do perfil: é do site. Se muitos sites falham, o aquecimento pode não chegar à metade e não contar.</div>
+      <label><input type="radio" name="resposta" value="Troca por outro site sorteado; aparece só nos detalhes; site que falha 3 vezes ganha aviso nas configurações"> Troca por outro site sorteado da lista, e só aparece nos detalhes; um site que falha muitas vezes ganha um aviso na lista de aquecimento<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="Pula sem trocar; aparece como aviso no perfil"> Pula sem trocar, e aparece como aviso no perfil</label>
+      <textarea name="nota" placeholder="Comentário (opcional)"></textarea>
+      <div class="foot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q10-fim">
+      <h3>10. Quando o lote termina, como você fica sabendo?</h3>
+      <div class="why">Um lote de 8 perfis leva mais de uma hora; você pode estar em outra coisa.</div>
+      <label><input type="radio" name="resposta" value="Resumo na tela do Manager e uma notificação do Mac"> Resumo na tela do Manager e uma notificação do Mac ("Lote terminou: 5 contaram, 1 pulado, 2 com erro")<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="Só o resumo na tela"> Só o resumo na tela</label>
+      <textarea name="nota" placeholder="Comentário (opcional)"></textarea>
+      <div class="foot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q11-fechar-manager">
+      <h3>11. Você fecha o Manager (ou o Mac dorme) com o lote rodando.</h3>
+      <div class="why">Fechar o Manager hoje fecha todos os perfis abertos.</div>
+      <label><input type="radio" name="resposta" value="Pergunta antes; se fechar, para o lote como Parar agora; o lote não continua sozinho depois"> Pergunta antes ("o lote vai parar"); se fechar, é como "Parar agora"; o lote não volta sozinho depois<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="Ao abrir de novo, oferece continuar o lote de onde parou"> Igual, mas ao abrir de novo o Manager oferece "continuar o lote de onde parou"</label>
+      <label><input type="radio" name="resposta" value="Impede o Mac de dormir enquanto o lote roda"> E mais: o Manager impede o Mac de dormir enquanto o lote roda</label>
+      <textarea name="nota" placeholder="Comentário (opcional)"></textarea>
+      <div class="foot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q12-geral">
+      <h3>12. Algo mais na tela que faltou ou sobrou?</h3>
+      <textarea name="nota" placeholder="Escreva livre"></textarea>
+      <div class="foot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+  </section>
+
+  <section class="round">
+    <h2>Depois (espera outros tickets)</h2>
+    <ul class="later">
+      <li>Lote que roda sozinho todo dia: fica com "Como funciona o cronograma de aquecimento, e o que é aquecer alinhado com os dados do perfil?".</li>
+      <li>O que fazer quando o envio para o servidor falha no fim de um perfil: fica com "Como abrir, fechar e forçar liberação funcionam no empréstimo?". No rascunho aparece só como "guardando…".</li>
+      <li>Quantas vagas da licença os dois Macs têm juntos: segue em aberto no mapa ("depois vemos").</li>
+    </ul>
+  </section>
+</div>
+
+<div id="switcher" aria-label="Trocar rascunho">
+  <button type="button" id="prev" aria-label="Rascunho anterior">←</button>
+  <span id="vlabel"></span>
+  <button type="button" id="next" aria-label="Próximo rascunho">→</button>
+</div>
+
+<script>
+(function(){
+  const NAMES = {A:'Tela própria do lote', B:'Assistente em passos', C:'Lote por trás, botão no topo'};
+  const KEYS = ['A','B','C'];
+  let variant = new URLSearchParams(location.search).get('variant');
+  if (!KEYS.includes(variant)) variant = 'A';
+
+  // perfis falsos
+  const BASE = [
+    {id:1,nome:'Loja 01',pais:'BR',etq:'lojas',marca:'aquecido em 18/11',scn:'ok'},
+    {id:2,nome:'Loja 02',pais:'BR',etq:'lojas',marca:'aquecido em 12/11',scn:'outro'},
+    {id:3,nome:'Anúncios 01',pais:'BR',etq:'anúncios',marca:'nunca aquecido',scn:'proxy'},
+    {id:4,nome:'Anúncios 02',pais:'BR',etq:'anúncios',marca:'nunca aquecido',scn:'sitefora'},
+    {id:5,nome:'Pesquisa US',pais:'US',etq:'pesquisa',marca:'aquecido em 02/11',scn:'licenca'},
+    {id:6,nome:'Teste MX',pais:'MX',etq:'pesquisa',marca:'nunca aquecido',scn:'poucos'},
+    {id:7,nome:'Marketplace 03',pais:'BR',etq:'lojas',marca:'aquecido em 20/11',scn:'ok'},
+    {id:8,nome:'Reserva 04',pais:'BR',etq:'—',marca:'aquecido em 24/11',scn:'ok',fora:true},
+  ];
+  const SITES = {BR:['notícias','clima','receitas','futebol','loja de móveis','blog de viagem','mapa','vídeos'],US:['news','weather','recipes','sports','hardware store','travel blog'],MX:['noticias','clima','recetas','fútbol','tienda','viajes']};
+  let S;
+  function reset(){
+    S = {fase:'escolher', passo:0, atual:-1, pararDepois:false, parado:false, fim:false, wizard:0, dropOpen:false, sel:new Set([1,2,3,4,5,6,7]),
+      p: BASE.map(b=>({...b, st:'fila', site:0, total:b.scn==='poucos'?6:(b.scn==='sitefora'?6:5+((b.id*3)%4)), msg:'', sub:0, falhas:[], espera:0, retry:false}))};
+  }
+  reset();
+  const sel = () => S.p.filter(p=>S.sel.has(p.id));
+  const fila = () => sel();
+
+  function iniciar(){ S.fase='rodando'; S.wizard=2; S.atual=0; fila().forEach(p=>{p.st='fila';}); step(); }
+  function proximoPerfil(){
+    if (S.pararDepois){ cancelarResto('Lote parado antes deste perfil.'); return fim(); }
+    const f = fila();
+    let i = f.findIndex((p,ix)=>ix>S.atual && p.st==='fila');
+    if (i===-1){
+      // segunda tentativa dos que estavam com o outro usuário
+      const r = f.findIndex(p=>p.st==='pulado' && p.scn==='outro' && !p.retry);
+      if (r!==-1){ f[r].retry=true; f[r].st='fila'; f[r].msg='Tentando de novo no fim do lote.'; S.atual=r; return; }
+      return fim();
+    }
+    S.atual=i;
+  }
+  function cancelarResto(m){ fila().forEach(p=>{ if(p.st==='fila'){p.st='cancelado';p.msg=m;} }); }
+  function fim(){ S.fase='fim'; S.fim=true; S.wizard=3; S.atual=-1; }
+  function step(){
+    if (S.fase==='escolher'){ iniciar(); return render(); }
+    if (S.fase!=='rodando') return render();
+    S.passo++;
+    const p = fila()[S.atual];
+    if (!p){ proximoPerfil(); return render(); }
+    if (p.st==='fila'){
+      if (p.scn==='outro'){ p.st='pulado'; p.msg=p.retry?'Ainda com o outro usuário (desde 14:02). Pulado de vez.':'Com o outro usuário desde 14:02. Pulado; tento de novo no fim do lote.'; proximoPerfil(); return render(); }
+      p.st='preparando'; p.msg='Pegando a trava e baixando a versão mais nova…'; return render();
+    }
+    if (p.st==='preparando'){
+      if (p.scn==='proxy'){ p.st='erro'; p.msg='O proxy deste perfil não respondeu. Nada foi aberto e a marca não mudou.'; p.acao=['Editar proxy','Aquecer de novo']; proximoPerfil(); return render(); }
+      if (p.scn==='licenca' && p.espera<2){ p.st='esperando'; p.espera++; p.msg='Licença sem vaga: 3 de 3 navegadores abertos (2 neste Mac, 1 no outro). Esperando uma vaga… ('+(p.espera*5)+' de 10 min)'; return render(); }
+      p.st='testando'; p.msg='Testando o proxy… saída: '+p.pais+'. Lista de aquecimento: '+p.pais+'.'; return render();
+    }
+    if (p.st==='esperando'){
+      if (p.espera<2){ p.espera++; p.msg='Licença sem vaga: 3 de 3 navegadores abertos (2 neste Mac, 1 no outro). Esperando uma vaga… ('+(p.espera*5)+' de 10 min)'; return render(); }
+      p.st='erro'; p.msg='Licença sem vaga por 10 minutos. Pulado; a marca não mudou. Feche um perfil para liberar uma vaga.'; p.acao=['Ver perfis abertos','Aquecer de novo']; proximoPerfil(); return render();
+    }
+    if (p.st==='testando'){ p.st='aquecendo'; p.site=1; p.msg='Visitando: '+SITES[p.pais][0]; return render(); }
+    if (p.st==='aquecendo'){
+      if (p.scn==='sitefora' && p.site===3 && !p.sub){ p.sub=1; p.falhas.push(SITES[p.pais][2]+' (fora do ar, trocado por '+SITES[p.pais][6]+')'); p.msg='Site "'+SITES[p.pais][2]+'" fora do ar; trocado por "'+SITES[p.pais][6]+'".'; return render(); }
+      if (p.scn==='poucos' && p.site>=2 && p.site<6){ p.falhas.push(SITES[p.pais][p.site]+' (fora do ar)'); p.site++; p.msg='Site fora do ar. '+p.falhas.length+' falharam até agora.'; if(p.site<6) return render(); }
+      if (p.site<p.total){ p.site++; p.msg='Visitando: '+SITES[p.pais][(p.site-1)%SITES[p.pais].length]+' · página '+(1+p.site%3); return render(); }
+      p.st='guardando'; p.msg='Enviando a versão nova e soltando a trava…'; return render();
+    }
+    if (p.st==='guardando'){
+      if (p.scn==='poucos'){ p.st='naocontou'; p.msg='Só 2 de 6 sites abriram (menos da metade). Não contou; a marca não mudou.'; p.acao=['Ver sites que falharam','Aquecer de novo']; }
+      else { p.st='contou'; p.marca='aquecido em 25/11'; p.msg='Contou. '+p.total+' sites'+(p.falhas.length?' (1 trocado)':'')+', 9 min.'; }
+      proximoPerfil(); return render();
+    }
+    render();
+  }
+  function pararAgora(){
+    const p = fila()[S.atual];
+    if (p && ['preparando','testando','aquecendo','guardando','esperando'].includes(p.st)){ p.st='parado'; p.msg='Parado no meio por você. Versão enviada e trava solta; não contou.'; }
+    cancelarResto('Não aquecido: o lote foi parado.'); fim(); render();
+  }
+  function pararDepois(){ S.pararDepois=true; render(); }
+
+  // ----- pedaços comuns
+  const CH = {fila:['c-fila','na fila'],preparando:['c-run','preparando'],testando:['c-run','testando proxy'],aquecendo:['c-run','aquecendo'],guardando:['c-run','guardando'],
+    contou:['c-ok','contou'],naocontou:['c-nao','não contou'],pulado:['c-pulo','pulado'],erro:['c-err','erro'],esperando:['c-wait','esperando vaga'],parado:['c-nao','parado'],cancelado:['c-fila','cancelado']};
+  const chip = st => `<span class="chip ${CH[st][0]}">${CH[st][1]}</span>`;
+  const pct = p => p.st==='contou'?100:(p.st==='aquecendo'||p.st==='guardando'?Math.round(100*p.site/p.total):0);
+  const feitos = () => fila().filter(p=>['contou','naocontou','pulado','erro','parado','cancelado'].includes(p.st) && !(p.scn==='outro'&&!p.retry&&p.st==='pulado'&&S.fase==='rodando'&&false)).length;
+  function geral(){
+    const f=fila(); const n=f.length; const d=f.filter(p=>['contou','naocontou','pulado','erro','parado','cancelado'].includes(p.st)).length;
+    const cur=f[S.atual]; const rest=f.filter(p=>p.st==='fila').length + (cur?1:0);
+    return {n,d,cur,min:rest*10, ok:f.filter(p=>p.st==='contou').length, nao:f.filter(p=>p.st==='naocontou'||p.st==='parado').length, pulo:f.filter(p=>p.st==='pulado').length, err:f.filter(p=>p.st==='erro').length, canc:f.filter(p=>p.st==='cancelado').length};
+  }
+  function acoes(p){ return (p.acao&&['erro','naocontou'].includes(p.st))? `<div class="acts">${p.acao.map(a=>`<button type="button" class="btn bs bsm">${a}</button>`).join('')}</div>`:''; }
+  function msgCls(p){ return p.st==='erro'?'e':(['pulado','naocontou','parado','esperando'].includes(p.st)?'w':''); }
+  function botoesParar(){
+    if (S.fase!=='rodando') return '';
+    return S.pararDepois? `<span class="chip c-nao">vai parar depois deste</span> <button type="button" class="btn bd bsm" data-act="agora">Parar agora</button>`
+      : `<button type="button" class="btn bs bsm" data-act="depois">Parar depois deste</button> <button type="button" class="btn bd bsm" data-act="agora">Parar agora</button>`;
+  }
+  function resumo(){
+    const g=geral();
+    return `<div class="card"><h3 style="font-size:15px;margin-bottom:8px">Lote terminou ${S.parado?'(parado por você)':''}</h3>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">${chip('contou')} ${g.ok} &nbsp; ${chip('naocontou')} ${g.nao} &nbsp; ${chip('pulado')} ${g.pulo} &nbsp; ${chip('erro')} ${g.err} ${g.canc?'&nbsp; '+chip('cancelado')+' '+g.canc:''}</div>
+      ${fila().filter(p=>p.st!=='contou').map(p=>`<div style="padding:6px 0;border-top:1px solid var(--b)"><b>${p.nome}</b> ${chip(p.st)}<div class="msg ${msgCls(p)}">${p.msg}</div>${acoes(p)}</div>`).join('')}
+      <div class="acts" style="margin-top:12px"><button type="button" class="btn bp bsm">Aquecer de novo os que não contaram</button><button type="button" class="btn bs bsm" data-act="reset">Fechar</button></div></div>`;
+  }
+  function sideList(mode){
+    // mode: 'check' (caixinhas), 'status' (andamento na linha), 'plain'
+    return S.p.map(p=>{
+      const lock = p.scn==='outro'; const inSel=S.sel.has(p.id);
+      let right = `<span class="meta">${lock?'🔒 com o outro':p.marca}</span>`;
+      if (mode==='status' && inSel && S.fase!=='escolher'){ right = chip(p.st); }
+      const box = mode==='check' && S.fase==='escolher' ? `<input type="checkbox" data-sel="${p.id}" ${inSel?'checked':''}>` : `<span class="dot ${lock?'lock':(['preparando','testando','aquecendo','guardando'].includes(p.st)&&inSel?'run':'')}"></span>`;
+      return `<div class="row ${S.atual>=0&&fila()[S.atual]===p?'sel':''}">${box}<span class="nm">${p.nome}</span>${right}</div>`;
+    }).join('');
+  }
+  function sideHead(extra){ return `<div class="hd"><div class="title"><span style="color:var(--ach)">▣</span> CloakBrowser Manager</div>${extra||''}<input class="input" placeholder="Buscar perfis…"></div>`; }
+  function atalhos(){ return `<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px"><button type="button" class="btn bs bsm" data-act="todos">Todos</button><button type="button" class="btn bs bsm" data-act="lojas">Etiqueta: lojas</button><button type="button" class="btn bs bsm" data-act="frios">Não aquecidos há 7 dias</button></div>`; }
+  function topBar(left, right){ return `<div class="top"><div style="display:flex;gap:10px;align-items:center;min-width:0">${left}</div><div style="display:flex;gap:8px;align-items:center">${right}</div></div>`; }
+
+  // ----- A: tela própria do lote
+  function VA(){
+    const g=geral();
+    let main;
+    if (S.fase==='escolher'){
+      main = `<h2 style="font-size:16px;margin-bottom:6px">Aquecer perfis</h2><p class="msg">Marque os perfis na lista à esquerda. ${sel().length} escolhidos · cerca de ${sel().length*10} min, um por vez, neste Mac.</p>
+        <p class="msg w">Loja 02 está com o outro usuário: o lote vai tentar, pular e tentar de novo no fim.</p>
+        <div class="acts" style="margin-top:12px"><button type="button" class="btn bp" data-act="start">Aquecer ${sel().length} perfis</button></div>`;
+    } else {
+      main = `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><h2 style="font-size:16px">Lote de aquecimento</h2><div class="msg">${g.d} de ${g.n} feitos${S.fase==='rodando'?' · cerca de '+g.min+' min restantes':''}</div></div><div>${botoesParar()}</div></div>
+        <div class="bar big" style="margin:10px 0 14px"><i style="width:${Math.round(100*g.d/g.n)}%"></i></div>
+        ${S.fase==='fim'?resumo():''}
+        <table class="q" style="margin-top:10px"><tr><th>Perfil</th><th style="width:130px">Estado</th><th style="width:150px">Andamento</th></tr>
+        ${fila().map(p=>`<tr><td><b>${p.nome}</b> <span class="meta" style="color:var(--g4);font-size:11px">${p.pais}</span><div class="msg ${msgCls(p)}">${p.msg||''}</div>${acoes(p)}</td><td>${chip(p.st)}</td><td>${p.st==='aquecendo'||p.st==='guardando'||p.st==='contou'?`<div class="bar"><i style="width:${pct(p)}%"></i></div><div class="msg">site ${Math.min(p.site,p.total)} de ${p.total}</div>`:''}</td></tr>`).join('')}</table>`;
+    }
+    return `<div class="body"><div class="side">${sideHead(S.fase==='escolher'?atalhos():'')}<div class="list">${sideList(S.fase==='escolher'?'check':'status')}</div></div>
+      <div class="main">${topBar('<span style="font-size:13px;font-weight:500">Aquecimento</span>','<button type="button" class="btn bs bsm">⚙</button>')}<div class="content">${main}</div></div></div>`;
+  }
+
+  // ----- B: assistente em passos
+  function VB(){
+    const passos=['1. Escolher','2. Confirmar','3. Acompanhar','4. Resumo'];
+    let w = S.wizard; let inner='';
+    if (w===0){
+      inner = `${atalhos()}<div style="max-height:300px;overflow:auto">${S.p.map(p=>{const lock=p.scn==='outro';return `<label class="row" style="cursor:pointer"><input type="checkbox" data-sel="${p.id}" ${S.sel.has(p.id)?'checked':''}><span class="nm">${p.nome}</span><span class="meta">${p.etq}</span><span class="meta" style="width:130px;text-align:right">${lock?'🔒 com o outro usuário':p.marca}</span></label>`}).join('')}</div>
+        <div class="acts" style="justify-content:flex-end;margin-top:12px"><button type="button" class="btn bs" data-act="fechar">Cancelar</button><button type="button" class="btn bp" data-act="wiz1">Continuar (${sel().length})</button></div>`;
+    } else if (w===1){
+      inner = `<div class="grid2"><div class="card"><b>${sel().length} perfis</b><div class="msg">Um por vez, neste Mac, na ordem da lista.</div><div class="msg">Cerca de ${sel().length*10} minutos no total.</div></div>
+        <div class="card"><b>Antes de começar</b><div class="msg w">Loja 02 está com o outro usuário: será pulado e tentado de novo no fim.</div><div class="msg">Licença: 1 vaga livre agora.</div><div class="msg">Você pode seguir usando outros perfis enquanto isso.</div></div></div>
+        <div class="acts" style="justify-content:flex-end;margin-top:12px"><button type="button" class="btn bs" data-act="wiz0">Voltar</button><button type="button" class="btn bp" data-act="start">Começar o aquecimento</button></div>`;
+    } else if (w===2){
+      const g=geral(); const p=g.cur;
+      inner = `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><div class="msg">Perfil ${Math.min(g.d+1,g.n)} de ${g.n} · cerca de ${g.min} min restantes</div><div>${botoesParar()}</div></div>
+        <div class="bar" style="margin:8px 0 14px"><i style="width:${Math.round(100*g.d/g.n)}%"></i></div>
+        ${p?`<div class="card"><div style="display:flex;justify-content:space-between;gap:8px"><b style="font-size:15px">${p.nome}</b>${chip(p.st)}</div>
+          <div class="timeline">${Array.from({length:p.total},(_,i)=>`<b class="${i<p.site-1||p.st==='guardando'?'d':(i===p.site-1&&p.st==='aquecendo'?'n':'')}">${i+1}</b>`).join('')}</div>
+          <div class="msg ${msgCls(p)}">${p.msg}</div>${acoes(p)}
+          <div style="margin-top:10px;height:90px;border:1px dashed var(--bh);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--g4);font-size:12px">prévia da janela do navegador</div></div>`:''}
+        <div style="margin-top:12px">${fila().filter(x=>x!==p).map(x=>`<div class="row"><span class="nm">${x.nome}</span>${chip(x.st)}</div>${['erro','pulado','naocontou'].includes(x.st)?`<div class="msg ${msgCls(x)}" style="margin:-2px 0 6px 10px">${x.msg}</div>`:''}`).join('')}</div>
+        <div class="acts" style="justify-content:flex-end;margin-top:10px"><button type="button" class="btn bs bsm" data-act="fechar">Esconder (o lote continua)</button></div>`;
+    } else { inner = resumo(); }
+    const modal = S.bHidden? '' : `<div class="overlay"><div class="modal"><div class="steps">${passos.map((s,i)=>`<span class="${i===w?'on':''}">${s}</span>`).join('')}</div><h2 style="font-size:17px;margin-bottom:12px">Aquecer perfis</h2>${inner}</div></div>`;
+    const pill = S.fase==='rodando'&&S.bHidden ? `<span class="pill" data-act="abrirB">Aquecendo ${geral().d+1}/${geral().n}</span>` : '';
+    return `<div class="body"><div class="side">${sideHead()}<div class="list">${sideList('plain')}</div></div>
+      <div class="main">${topBar('<span style="font-size:13px;font-weight:500">Loja 01</span>', pill+'<button type="button" class="btn bs bsm" data-act="abrirB">🔥 Aquecer perfis…</button>')}
+      <div class="content"><p class="msg">(a tela normal do perfil fica aqui atrás)</p></div></div></div>${modal}`;
+  }
+
+  // ----- C: lote por trás
+  function VC(){
+    const g=geral(); const cur=g.cur;
+    let pill='';
+    if (S.fase==='escolher') pill = `<span class="msg">Marque perfis na lista e aperte "Aquecer"</span>`;
+    else if (S.fase==='rodando') pill = `<span class="pill" data-act="drop">🔥 ${g.d} de ${g.n} · ${cur?cur.nome+(cur.st==='aquecendo'?' · site '+cur.site+' de '+cur.total:' · '+CH[cur.st][1]):''} <span style="width:60px;display:inline-block" class="bar"><i style="width:${Math.round(100*g.d/g.n)}%"></i></span>${g.err+g.pulo+g.nao? ' <span class="chip c-err">'+(g.err+g.pulo+g.nao)+' aviso'+((g.err+g.pulo+g.nao)>1?'s':'')+'</span>':''}</span>`;
+    else pill = `<span class="pill" data-act="drop">✓ Lote terminou · ${g.ok} contaram${g.err+g.pulo+g.nao?' · <span style="color:var(--err)">'+(g.err+g.pulo+g.nao+g.canc)+' não</span>':''}</span>`;
+    const ultimoErro = fila().filter(p=>p.st==='erro'||p.st==='esperando').slice(-1)[0];
+    const banner = ultimoErro && S.fase==='rodando' ? `<div class="banner ${ultimoErro.st==='erro'?'e':'w'}">⚠ <b>${ultimoErro.nome}:</b> ${ultimoErro.msg} <button type="button" class="bl" data-act="drop">ver lote</button></div>`:'';
+    const drop = S.dropOpen && S.fase!=='escolher' ? `<div class="drop"><div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap"><b>Lote de aquecimento</b><div>${botoesParar()}</div></div>
+      ${S.fase==='fim'?resumo():fila().map(p=>`<div style="padding:6px 0;border-top:1px solid var(--b)"><div style="display:flex;justify-content:space-between;gap:6px"><span>${p.nome}</span>${chip(p.st)}</div>${p.msg?`<div class="msg ${msgCls(p)}">${p.msg}</div>`:''}${p.st==='aquecendo'?`<div class="bar" style="margin-top:4px"><i style="width:${pct(p)}%"></i></div>`:''}${acoes(p)}</div>`).join('')}</div>`:'';
+    const head = S.fase==='escolher' ? `${atalhos()}<div class="acts" style="margin-bottom:8px"><button type="button" class="btn bp bsm" data-act="start">🔥 Aquecer ${sel().length}</button><span class="msg">≈ ${sel().length*10} min</span></div>` : '';
+    return `${banner}<div class="body"><div class="side">${sideHead(head)}<div class="list">${sideList(S.fase==='escolher'?'check':'status')}</div></div>
+      <div class="main">${topBar('<span style="font-size:13px;font-weight:500">Marketplace 03</span> <span class="chip c-ok">aquecido em 20/11</span>', pill+'<button type="button" class="btn bp bsm">Abrir</button>')}
+      <div class="content"><p class="msg">(você segue usando o Manager normalmente; aqui fica o perfil que você selecionou)</p>${drop}</div></div></div>`;
+  }
+
+  const app = document.getElementById('app');
+  function render(){
+    app.innerHTML = ({A:VA,B:VB,C:VC})[variant]();
+    document.getElementById('vlabel').textContent = variant+' ('+NAMES[variant]+')';
+    const g=geral();
+    document.getElementById('simInfo').textContent = 'Passo '+S.passo+' · fase: '+S.fase;
+    document.getElementById('state').textContent = 'Estado: '+fila().map(p=>p.nome+'='+CH[p.st][1]+(p.st==='aquecendo'?' ('+p.site+'/'+p.total+')':'')).join(' · ')+(S.pararDepois?' · vai parar depois deste':'');
+  }
+  app.addEventListener('click', e=>{
+    const t=e.target.closest('[data-act]'); const cb=e.target.closest('[data-sel]');
+    if (cb){ const id=+cb.dataset.sel; cb.checked?S.sel.add(id):S.sel.delete(id); return render(); }
+    if (!t) return; const a=t.dataset.act;
+    if (a==='start'){ S.bHidden=false; iniciar(); }
+    else if (a==='agora'){ S.parado=true; pararAgora(); }
+    else if (a==='depois') pararDepois();
+    else if (a==='reset') reset();
+    else if (a==='drop') S.dropOpen=!S.dropOpen;
+    else if (a==='wiz1') S.wizard=1; else if (a==='wiz0') S.wizard=0;
+    else if (a==='fechar'){ S.bHidden=true; }
+    else if (a==='abrirB'){ S.bHidden=false; }
+    else if (a==='todos') S.sel=new Set(S.p.map(p=>p.id));
+    else if (a==='lojas') S.sel=new Set(S.p.filter(p=>p.etq==='lojas').map(p=>p.id));
+    else if (a==='frios') S.sel=new Set(S.p.filter(p=>!/2[0-9]\/11/.test(p.marca)).map(p=>p.id));
+    render();
+  });
+  let auto=null;
+  document.getElementById('simNext').addEventListener('click', ()=>{ if(S.fase==='escolher'){S.bHidden=false;} step(); });
+  document.getElementById('simReset').addEventListener('click', ()=>{ reset(); S.bHidden=false; render(); });
+  document.getElementById('simAuto').addEventListener('click', e=>{
+    if (auto){ clearInterval(auto); auto=null; e.target.textContent='Andar sozinho'; return; }
+    e.target.textContent='Parar a simulação'; auto=setInterval(()=>{ if(S.fase==='fim'){clearInterval(auto);auto=null;document.getElementById('simAuto').textContent='Andar sozinho';return;} if(S.fase==='escolher'){S.bHidden=false;} step(); }, 700);
+  });
+  function go(d){ variant = KEYS[(KEYS.indexOf(variant)+d+KEYS.length)%KEYS.length]; const u=new URL(location.href); u.searchParams.set('variant',variant); history.replaceState(null,'',u); render(); }
+  document.getElementById('prev').addEventListener('click', ()=>go(-1));
+  document.getElementById('next').addEventListener('click', ()=>go(1));
+  document.addEventListener('keydown', e=>{ if (e.target.closest('input,textarea,select,[contenteditable]')) return; if(e.key==='ArrowLeft')go(-1); if(e.key==='ArrowRight')go(1); });
+  render();
+
+  // ----- perguntas: cada formulário manda uma resposta (substitui a anterior da mesma pergunta)
+  document.querySelectorAll('form.qf').forEach(f=>{
+    f.addEventListener('submit', ev=>{
+      ev.preventDefault();
+      const fd = new FormData(f); const q = f.dataset.lavishQuestion; const titulo = f.querySelector('h3').textContent;
+      const r = fd.get('resposta') || ''; const n = (fd.get('nota')||'').trim();
+      const st = f.querySelector('.st');
+      if (!r && !n){ st.textContent='marque uma opção ou escreva algo'; return; }
+      const texto = titulo + ' → ' + (r||'(sem opção)') + (n? ' · nota: '+n : '');
+      if (window.lavish && window.lavish.queuePrompt){
+        window.lavish.queuePrompt(texto, {tag:'choice', text:texto, element:f, queueKey:q, data:{question:q, answer:r, note:n, variant_vista:variant}});
+        st.textContent='guardada (falta apertar Send to Agent)'; st.classList.add('q');
+      } else { st.textContent='abra esta página pelo Lavish para enviar'; }
+    });
+  });
+})();
+</script>
+</body>
+</html>
