@@ -37,7 +37,9 @@ Só no Mac do dono: o segundo Mac não estava disponível. O navegador rodou sem
 
 ## O lado ruim
 
-A chave fixa é pública: quem pegar a pasta de um perfil, num Mac, no servidor ou num backup, lê as senhas e os cookies dele. Isso já vale hoje, para todos os perfis. Pesa no ticket "Onde fica a chave da criptografia e como o outro usuário a recebe?" (#11): a cópia guardada no servidor precisa estar cifrada.
+A chave fixa é pública: quem pegar a pasta de um perfil, num Mac, no servidor ou num backup, lê as senhas e os cookies dele. Isso já vale hoje, para todos os perfis.
+
+Isso bate de frente com o ticket "Onde fica a chave da criptografia e como o outro usuário a recebe?" (#11), que decidiu levar o item "Safe Storage" do Keychain de um Mac ao outro: hoje o navegador não usa esse item. Para valer o que ele decidiu, o Manager teria de desligar `--use-mock-keychain`, e aí os perfis que já existem perderiam senhas e cookies, a menos que houvesse uma migração. A escolha vai para um ticket novo, "Senhas e cookies ficam na chave fixa de teste ou passam para uma chave própria?".
 
 ## O que ficou para os dois Macs
 
