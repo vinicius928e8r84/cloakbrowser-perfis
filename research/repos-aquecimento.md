@@ -102,9 +102,6 @@ Pesquisa do ticket [Algum repositório do CloakHQ ou do browser-use ajuda o aque
 
 - **O que é**: o experimento original do agente com o modelo Jev, "now ultrafast mode in Browser Use" ([README](https://github.com/browser-use/jev-ultrafast/blob/cf3c406f0fc4becff8986ed4d4d37b7b9f102e45/README.md)); pede `TYPESAFE_API_KEY` e `TEXT_MODEL_API_KEY`. **Licença**: MIT. **Último commit**: 2026-11-11 (só o aviso). É o antecessor do CloakBrowser-Agent; nada a mais para o aquecimento.
 
-## De passagem: fatos do CloakBrowser para outras partes do mapa
+## Fora deste ticket
 
-Lidos no mesmo README; não respondem a este ticket, mas tocam a névoa do mapa.
-
-- **Mesmas versões nos dois Macs.** `CLOAKBROWSER_AUTO_UPDATE=false` "keep the cached build and skip update checks" ([README L650](https://github.com/CloakHQ/CloakBrowser/blob/09b1bf62a2fae23128772df4974a49ccac8abc5d/README.md#L650)); no código, com o envio congelado e um build no cache, ele usa o do cache sem perguntar ao servidor, e sem build no cache ainda baixa um ([`download.py` L483–L490](https://github.com/CloakHQ/CloakBrowser/blob/09b1bf62a2fae23128772df4974a49ccac8abc5d/cloakbrowser/download.py#L483-L490)). A mesma variável desliga o aviso de versão nova da biblioteca ([`download.py` L1064–L1071](https://github.com/CloakHQ/CloakBrowser/blob/09b1bf62a2fae23128772df4974a49ccac8abc5d/cloakbrowser/download.py#L1064-L1071)). Fixar uma versão exata (`CLOAKBROWSER_VERSION`) é "Paid Pro key only. A free key cannot pin: it ignores the pin and always gets the latest build", e "unpinned launches always use the latest available version" ([README L1209–L1225](https://github.com/CloakHQ/CloakBrowser/blob/09b1bf62a2fae23128772df4974a49ccac8abc5d/README.md#L1209-L1225)). O Manager não define nenhuma das duas variáveis hoje.
-- **Licença em dois Macs.** A chave grátis dá "one concurrent session"; o Pro sobe para "5, 20, 200, 2,000, or more concurrent sessions" ([README L191–L192](https://github.com/CloakHQ/CloakBrowser/blob/09b1bf62a2fae23128772df4974a49ccac8abc5d/README.md#L191-L192)).
+Fatos do CloakBrowser sobre versões e licença em dois Macs, achados de passagem, ficam em [versao-e-licenca-do-cloakbrowser.md](versao-e-licenca-do-cloakbrowser.md).
