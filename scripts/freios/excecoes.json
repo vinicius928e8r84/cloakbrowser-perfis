@@ -1,0 +1,19 @@
+{
+  "tamanho": [
+    {
+      "glob": "scripts/freios/package-lock.json",
+      "motivo": "trava de pacotes gerada pelo npm; ninguém a edita à mão"
+    }
+  ],
+  "comentarios": [],
+  "sintaxe": [],
+  "segredo": [
+    {
+      "glob": "backend/tests/test_browser_manager.py",
+      "motivo": "o teste usa um proxy de mentira, com usuário e senha inventados, para conferir a normalização da URL"
+    }
+  ],
+  "binario": [],
+  "ruff": [],
+  "eslint": []
+}
