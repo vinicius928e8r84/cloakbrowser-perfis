@@ -14,6 +14,13 @@
     }
   ],
   "binario": [],
+  "dados_pessoais": [],
+  "depuracao": [
+    {
+      "glob": "scripts/freios/principal.py",
+      "motivo": "é a saída do comando dos freios: imprimir o veredito é o trabalho do módulo, e ele não tem ponto de entrada próprio (quem chama é freios.py)"
+    }
+  ],
   "ruff": [],
   "eslint": []
 }
