@@ -216,7 +216,8 @@
     "verificacoes": [
       "tamanho",
       "comentarios",
-      "dados_pessoais"
+      "dados_pessoais",
+      "depuracao"
     ]
   }
 }
