@@ -1,0 +1,437 @@
+<!doctype html>
+<!-- PROTÓTIPO DESCARTÁVEL: três rascunhos da tela de extensões dos perfis, trocados por ?variant=A|B|C e pela barra de baixo. Dados falsos, nada é salvo. -->
+<html lang="pt-BR" data-lavish-annotate="on">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Protótipo: extensões dos perfis</title>
+<style>
+  :root{--s0:#0a0a0a;--s1:#111;--s2:#1a1a1a;--s3:#222;--s4:#2a2a2a;--b:#2a2a2a;--bh:#3a3a3a;--ac:#6366f1;--ach:#818cf8;
+    --g1:#f3f4f6;--g2:#e5e7eb;--g3:#9ca3af;--g4:#6b7280;--ok:#34d399;--warn:#fbbf24;--err:#f87171;--info:#60a5fa}
+  *{box-sizing:border-box} body{margin:0;background:var(--s0);color:var(--g2);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;font-size:14px;line-height:1.45}
+  h1,h2,h3{margin:0} a{color:var(--ach)} code{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--g3)}
+  .doc{max-width:1180px;margin:0 auto;padding:24px 20px 120px}
+  .lead{color:var(--g3);max-width:860px}
+  .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;background:var(--s3);color:var(--g3)}
+  .proto-note{margin:14px 0;padding:10px 14px;border:1px dashed var(--warn);border-radius:8px;color:var(--warn);font-size:13px}
+  .app{height:640px;border:1px solid var(--b);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;background:var(--s0);position:relative;min-width:0}
+  .app .body{flex:1;display:flex;min-height:0}
+  .side{width:260px;flex-shrink:0;border-right:1px solid var(--b);background:var(--s1);display:flex;flex-direction:column;min-width:0}
+  .side .hd{padding:14px;border-bottom:1px solid var(--b);font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center}
+  .side .list{flex:1;overflow:auto;padding:8px}
+  .row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;border:1px solid transparent;margin-bottom:3px;min-width:0;cursor:pointer}
+  .row:hover{background:var(--s2)} .row.sel{background:var(--s3);border-color:var(--bh)}
+  .row .nm{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
+  .row .meta{font-size:11px;color:var(--g4);white-space:nowrap}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--g4);flex-shrink:0} .dot.run{background:var(--ok)} .dot.lock{background:var(--warn)}
+  .main{flex:1;display:flex;flex-direction:column;min-width:0;position:relative}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 14px;border-bottom:1px solid var(--b);background:var(--s1);min-height:44px}
+  .content{flex:1;overflow:auto;padding:18px;min-width:0}
+  .btn{padding:6px 12px;border-radius:6px;font-size:13px;font-weight:500;border:0;cursor:pointer;font-family:inherit}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .bp{background:var(--ac);color:#fff}.bp:hover{background:var(--ach)} .bs{background:var(--s3);color:var(--g2)}.bs:hover{background:var(--s4)}
+  .bd{background:rgba(220,38,38,.2);color:var(--err)} .bl{background:none;color:var(--ach);padding:2px 4px;text-decoration:underline;font-size:12px}
+  .bsm{padding:3px 8px;font-size:12px}
+  .chip{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:2px 8px;border-radius:999px;white-space:nowrap;background:var(--s3);color:var(--g3)}
+  .c-ok{background:rgba(52,211,153,.15);color:var(--ok)} .c-warn{background:rgba(251,191,36,.12);color:var(--warn)} .c-err{background:rgba(248,113,113,.15);color:var(--err)} .c-info{background:rgba(96,165,250,.15);color:var(--info)}
+  .chip .x{cursor:pointer;opacity:.7} .chip .x:hover{opacity:1}
+  .msg{font-size:12px;color:var(--g3);margin-top:3px} .msg.e{color:var(--err)} .msg.w{color:var(--warn)}
+  .card{background:var(--s1);border:1px solid var(--b);border-radius:8px;padding:14px;min-width:0;margin-bottom:10px}
+  .sec{font-size:11px;font-weight:600;color:var(--g3);text-transform:uppercase;letter-spacing:.06em;margin:16px 0 8px}
+  .ext{display:flex;gap:10px;align-items:flex-start;padding:10px;border-radius:8px;background:var(--s2);margin-bottom:6px;min-width:0}
+  .ext .ic{width:28px;height:28px;border-radius:6px;background:var(--s4);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .ext .tx{flex:1;min-width:0} .ext .t{font-weight:600;font-size:13px} .ext .acts{display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0}
+  .chips{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+  table.m{border-collapse:collapse;font-size:13px;min-width:100%} table.m td,table.m th{padding:7px 10px;border-bottom:1px solid var(--b);text-align:center;vertical-align:middle}
+  table.m th{font-size:12px;font-weight:600;color:var(--g2);background:var(--s1);position:sticky;top:0}
+  table.m td:first-child,table.m th:first-child{text-align:left}
+  table.m tr.lock td{color:var(--g4)} td.pend{background:rgba(99,102,241,.15)}
+  .banner{display:flex;align-items:center;gap:8px;justify-content:center;padding:6px 14px;font-size:12px;border-bottom:1px solid}
+  .banner.w{background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.3);color:var(--warn)}
+  .overlay{position:absolute;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:5}
+  .modal{width:min(640px,92%);max-height:92%;overflow:auto;background:var(--s1);border:1px solid var(--bh);border-radius:12px;padding:18px}
+  .modal h3{font-size:16px;margin-bottom:8px}
+  .pick label{display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:6px;cursor:pointer} .pick label:hover{background:var(--s2)}
+  .finder{border:1px solid var(--bh);border-radius:8px;overflow:hidden;margin:8px 0}
+  .finder div{padding:7px 10px;border-bottom:1px solid var(--b);cursor:pointer;font-size:13px} .finder div:hover{background:var(--s3)}
+  .res td{padding:6px 8px;border-bottom:1px solid var(--b);font-size:13px;vertical-align:top}
+  .foot{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+  .sim{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0;font-size:12px;color:var(--g3)}
+  .state{font-family:ui-monospace,Consolas,monospace;font-size:11px;color:var(--g4);background:var(--s1);border:1px solid var(--b);border-radius:8px;padding:8px 10px;margin-top:8px;white-space:pre-wrap;max-height:140px;overflow:auto}
+  #switcher{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);display:flex;align-items:center;gap:6px;background:#fff;color:#111;border-radius:999px;padding:6px 8px;box-shadow:0 6px 24px rgba(0,0,0,.5);z-index:50;font-size:13px;font-weight:600}
+  #switcher button{border:0;background:#eee;border-radius:999px;width:30px;height:30px;cursor:pointer;font-size:15px}
+  #switcher span{padding:0 10px;white-space:nowrap}
+  section.round{margin-top:34px} section.round h2{font-size:18px;margin-bottom:6px}
+  .settled li,.later li{margin:4px 0;color:var(--g3)}
+  .qf{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:14px 16px;margin:12px 0}
+  .qf h3{font-size:15px;margin-bottom:4px} .qf .why{font-size:12.5px;color:var(--g3);margin-bottom:8px}
+  .qf label{display:block;padding:5px 8px;border-radius:6px;cursor:pointer} .qf label:hover{background:var(--s2)}
+  .qf .rec{font-size:11px;color:var(--ok);margin-left:6px;font-weight:600}
+  .qf textarea{width:100%;min-height:44px;margin-top:6px;background:var(--s2);border:1px solid var(--b);border-radius:6px;color:var(--g1);padding:6px 8px;font-family:inherit;font-size:13px}
+  .qf .qfoot{display:flex;gap:10px;align-items:center;margin-top:8px} .qf .st{font-size:12px;color:var(--g4)} .qf .st.q{color:var(--ok)}
+</style>
+</head>
+<body>
+<div class="doc">
+  <span class="tag">Mapa: aquecimento, uso com trava e perfis sincronizados · ticket "Como é a tela para adicionar, atualizar e ver as extensões dos perfis?"</span>
+  <h1 style="font-size:24px;margin:10px 0 6px">Como as extensões dos perfis aparecem na tela</h1>
+  <p class="lead">Três rascunhos diferentes, no visual do Manager. Troque entre eles pela barra branca embaixo (ou pelas setas ← →). Em cada um, experimente: <b>adicionar</b> uma extensão a vários perfis, <b>atualizar</b> o "Bloqueador de anúncios" para a versão 1.5.0, <b>tirar</b> uma extensão de um perfil. "Loja 03" e "Pessoal 02" estão com o outro Mac (cadeado); "Loja 02" está aberta neste Mac. Depois responda as perguntas abaixo.</p>
+  <div class="proto-note">Rascunho descartável: nomes, pastas e versões são inventados; nada é salvo, e o botão "Escolher pasta…" abre uma janela falsa no lugar da janela do Mac.</div>
+
+  <div class="sim">
+    <button class="btn bs bsm" id="simSolta" type="button">Simular: o outro Mac fecha a Loja 03 (solta a trava)</button>
+    <button class="btn bs bsm" id="simReset" type="button">Recomeçar</button>
+  </div>
+  <div class="app" id="app"></div>
+  <div class="state" id="state"></div>
+
+  <section class="round">
+    <h2>Já decidido (não precisa responder)</h2>
+    <ul class="settled">
+      <li>Ao adicionar, o Manager copia a pasta da extensão para dentro da pasta do perfil; a pasta original nunca é apagada ("Onde mora a pasta de uma extensão para ela ir junto com o perfil?").</li>
+      <li>O Manager garante a linha <code>key</code> na cópia, para a extensão ter o mesmo nome interno (ID) nos dois Macs.</li>
+      <li>A loja do Chrome segue desligada: uma extensão entra só como pasta, pelo Manager.</li>
+      <li>Mudar a configuração de um perfil pede a trava: livre, o Manager pega a trava, grava, envia e solta; com o outro Mac, não muda ("Como abrir, fechar e forçar liberação funcionam no empréstimo?").</li>
+      <li>Tudo em português.</li>
+    </ul>
+  </section>
+
+  <section class="round" id="perguntas">
+    <h2>Esta rodada</h2>
+    <p class="lead">Marque uma opção em cada pergunta (a recomendada está indicada), escreva se quiser, e aperte <b>Guardar resposta</b>. No fim, aperte <b>Send to Agent</b> (no painel do Lavish) para me mandar tudo de uma vez. Pode deixar alguma em branco.</p>
+
+    <form class="qf" data-lavish-question="q1-variante">
+      <h3>1. Qual rascunho fica mais perto do que você quer?</h3>
+      <div class="why">A: as extensões ficam dentro de cada perfil, como hoje, com "Usar também em outros perfis…". B: uma tela "Extensões" própria, com um cartão por extensão e os perfis que a usam. C: uma tabela com os perfis nas linhas e as extensões nas colunas; marca e desmarca, e aplica de uma vez.</div>
+      <label><input type="radio" name="resposta" value="A: dentro de cada perfil"> A: dentro de cada perfil</label>
+      <label><input type="radio" name="resposta" value="B: tela Extensões com um cartão por extensão, e a lista também dentro do perfil"> B: tela "Extensões" com um cartão por extensão (e a lista, só para ver, dentro de cada perfil)<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="C: tabela perfis x extensões"> C: tabela perfis × extensões</label>
+      <label><input type="radio" name="resposta" value="Mistura (explico abaixo)"> Mistura (explico abaixo, por exemplo "os cartões do B com a tabela do C")</label>
+      <textarea name="nota" placeholder="Comentário (opcional)"></textarea>
+      <div class="qfoot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q2-outro-mac">
+      <h3>2. Você escolhe um perfil que está com o outro Mac para adicionar, atualizar ou tirar uma extensão.</h3>
+      <div class="why">Sem a trava o perfil não muda. Igual ao lote de aquecimento, que deixa escolher e pula.</div>
+      <label><input type="radio" name="resposta" value="Deixa escolher; esse perfil é pulado, com aviso e 'Tentar de novo nos que faltaram'"> Deixa escolher; na hora de aplicar esse perfil é pulado, com aviso e um botão "Tentar de novo nos que faltaram"<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="Não deixa escolher: aparece com cadeado e desativado"> Não deixa escolher: aparece com cadeado, desativado</label>
+      <label><input type="radio" name="resposta" value="Guarda a mudança e aplica sozinho quando a trava voltar"> Guarda a mudança e aplica sozinha quando a trava ficar livre</label>
+      <textarea name="nota" placeholder="Comentário (opcional)"></textarea>
+      <div class="qfoot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q3-aberto-aqui">
+      <h3>3. E um perfil que está aberto neste Mac?</h3>
+      <div class="why">Este Mac já tem a trava. O navegador só carrega extensões ao abrir.</div>
+      <label><input type="radio" name="resposta" value="Muda já e avisa 'vale na próxima vez que abrir'"> Muda já e avisa "vale na próxima vez que você abrir este perfil"<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="Oferece fechar e abrir de novo agora"> Muda e oferece "Fechar e abrir de novo agora"</label>
+      <label><input type="radio" name="resposta" value="Pula, como os do outro Mac"> Pula, como os do outro Mac, até ele ser fechado</label>
+      <textarea name="nota" placeholder="Comentário (opcional)"></textarea>
+      <div class="qfoot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q4-atualizar-de-onde">
+      <h3>4. Ao atualizar, de onde vem a versão nova?</h3>
+      <div class="why">O Manager não guarda uma biblioteca de extensões; cada perfil tem a sua cópia. A pasta original fica em cada Mac, num caminho diferente.</div>
+      <label><input type="radio" name="resposta" value="Você escolhe a pasta da versão nova toda vez"> Você escolhe a pasta da versão nova toda vez ("Atualizar…" → "Escolher pasta…")<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="O Manager lembra a pasta de origem neste Mac e oferece 'Procurar versão nova'"> O Manager lembra a pasta de onde veio, neste Mac, e oferece "Procurar versão nova" nela</label>
+      <textarea name="nota" placeholder="Comentário (opcional). Hoje você baixa as extensões de onde?"></textarea>
+      <div class="qfoot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q5-outra-extensao">
+      <h3>5. A pasta escolhida para atualizar é de outra extensão (outro nome interno).</h3>
+      <div class="why">Experimente: em "Atualizar…" do Bloqueador, escolha a pasta do Tradutor. Atualizar com outro nome interno faria a extensão perder o que guardou.</div>
+      <label><input type="radio" name="resposta" value="Recusa, com mensagem dizendo de qual extensão é a pasta"> Recusa, com a mensagem "Esta pasta é do Tradutor, não do Bloqueador de anúncios"<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="Pergunta se quer trocar mesmo assim, avisando que a extensão começa do zero"> Pergunta se quer trocar mesmo assim, avisando que a extensão começa do zero</label>
+      <textarea name="nota" placeholder="Comentário (opcional)"></textarea>
+      <div class="qfoot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q6-tirar">
+      <h3>6. Ao tirar uma extensão de um perfil, o que acontece com ela?</h3>
+      <div class="why">A cópia mora dentro da pasta do perfil. O que a extensão guardou (login, configurações) fica em outro lugar da pasta, e as versões antigas do perfil continuam no servidor.</div>
+      <label><input type="radio" name="resposta" value="Some da lista e a cópia sai da pasta do perfil; o que ela guardou fica, e volta se adicionar de novo"> Some da lista e a cópia sai da pasta do perfil; o que ela guardou fica, e volta se você a adicionar de novo<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="Só desliga: a cópia fica na pasta, com um botão Ligar"> Só desliga: a cópia fica na pasta, com um botão "Ligar" para voltar</label>
+      <label><input type="radio" name="resposta" value="Tira e apaga também o que ela guardou"> Tira e apaga também o que ela guardou (pergunta antes)</label>
+      <textarea name="nota" placeholder="Comentário (opcional)"></textarea>
+      <div class="qfoot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q7-criar">
+      <h3>7. Ao criar um perfil novo, dá para escolher extensões já ali?</h3>
+      <div class="why">Criar um perfil já pede o servidor ("Como um perfil criado num Mac aparece no outro…").</div>
+      <label><input type="radio" name="resposta" value="Sim: 'Copiar as extensões de outro perfil' e 'Adicionar pasta…' no formulário de criar"> Sim: no formulário de criar, "Copiar as extensões de…" (outro perfil) e "Adicionar pasta…"<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="Não: cria sem extensões e adiciona depois"> Não: cria sem extensões e adiciona depois</label>
+      <textarea name="nota" placeholder="Comentário (opcional)"></textarea>
+      <div class="qfoot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q8-geral">
+      <h3>8. Algo mais na tela que faltou ou sobrou?</h3>
+      <textarea name="nota" placeholder="Escreva livre"></textarea>
+      <div class="qfoot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+  </section>
+
+  <section class="round">
+    <h2>Depois (fica para outros tickets ou para a implementação)</h2>
+    <ul class="later">
+      <li>Os perfis que já usam extensão por caminho do Mac ganham a cópia quando viram compartilhados: isso fica nas telas de entrada ("Como são as telas e a ordem dos passos para um Mac entrar no compartilhamento?"). Hoje nenhum perfil usa extensão.</li>
+      <li>O tempo para aplicar em vários perfis (cada um baixa, grava e envia) só será medido na implementação.</li>
+    </ul>
+  </section>
+</div>
+
+<div id="switcher" aria-label="Trocar rascunho">
+  <button type="button" id="prev" aria-label="Rascunho anterior">←</button>
+  <span id="vlabel"></span>
+  <button type="button" id="next" aria-label="Próximo rascunho">→</button>
+</div>
+
+<script>
+(function(){
+  const NAMES = {A:'Dentro de cada perfil', B:'Tela Extensões, um cartão por extensão', C:'Tabela perfis × extensões'};
+  const KEYS = ['A','B','C'];
+  let variant = new URLSearchParams(location.search).get('variant');
+  if (!KEYS.includes(variant)) variant = 'B';
+
+  const OUTRO = 'Mac do escritório';
+  const PASTAS = [
+    {pasta:'~/Downloads/bloqueador-1.5.0', id:'bloq', nome:'Bloqueador de anúncios', ver:'1.5.0', key:true},
+    {pasta:'~/Downloads/tradutor-0.9', id:'trad', nome:'Tradutor', ver:'0.9', key:false},
+    {pasta:'~/Downloads/senhas-2.3.1', id:'senh', nome:'Gerenciador de senhas', ver:'2.3.1', key:true},
+  ];
+  const IDS = {bloq:'cjpalhdlnbpafiamejdnhcphjbkeiagm', trad:'mkbmhfoclgafkbbjckdgkaaoeiaijpnd', senh:'nngceckbapebfimnlniiiahkandclblb'};
+  let S;
+  function reset(){
+    S = {
+      sel: 1,
+      p: [
+        {id:1, nome:'Loja 01', st:'livre'},
+        {id:2, nome:'Loja 02', st:'aberto'},
+        {id:3, nome:'Loja 03', st:'outro', desde:'14:32'},
+        {id:4, nome:'Loja 04', st:'livre'},
+        {id:5, nome:'Pessoal 01', st:'livre'},
+        {id:6, nome:'Pessoal 02', st:'outro', desde:'09:10'},
+      ],
+      ext: {bloq:{nome:'Bloqueador de anúncios', ver:'1.4.0'}, senh:{nome:'Gerenciador de senhas', ver:'2.3.1'}},
+      uso: {1:{bloq:'1.4.0', senh:'2.3.1'}, 2:{bloq:'1.4.0'}, 3:{bloq:'1.4.0'}, 4:{}, 5:{senh:'2.3.1'}, 6:{bloq:'1.4.0'}},
+      modal: null, faltaram: null, page: 'perfil', pend: {}, log: []
+    };
+  }
+  reset();
+
+  const P = id => S.p.find(p=>p.id===id);
+  const usam = e => S.p.filter(p=>S.uso[p.id][e]);
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
+  function stChip(p){
+    if (p.st==='outro') return `<span class="chip c-warn" title="Com ${OUTRO} desde ${p.desde}">🔒 ${OUTRO}</span>`;
+    if (p.st==='aberto') return `<span class="chip c-ok">aberto aqui</span>`;
+    return '';
+  }
+
+  // aplicar uma mudança em vários perfis: pega a trava, grava, envia, solta
+  function aplicar(alvos, fazer, rotulo){
+    const res = [];
+    alvos.forEach(id=>{
+      const p = P(id);
+      if (p.st==='outro'){ res.push({id, r:'pulado', m:`Com ${OUTRO} desde ${p.desde}. Não mudou.`}); return; }
+      fazer(id);
+      if (p.st==='aberto') res.push({id, r:'ok', m:'Feito. Vale na próxima vez que você abrir este perfil.'});
+      else res.push({id, r:'ok', m:'Pegou a trava, gravou, enviou e soltou.'});
+    });
+    S.log.push(rotulo+': '+res.map(x=>P(x.id).nome+'='+x.r).join(', '));
+    const faltam = res.filter(x=>x.r==='pulado').map(x=>x.id);
+    S.faltaram = faltam.length ? {ids:faltam, fazer, rotulo} : null;
+    S.modal = {t:'res', rotulo, res};
+  }
+
+  // ----- janelas (comuns aos três rascunhos)
+  function modalHtml(){
+    const m = S.modal; if (!m) return '';
+    let h = '';
+    if (m.t==='finder'){
+      h = `<h3>${m.titulo}</h3><p class="msg">Janela falsa no lugar da janela "Escolher pasta" do Mac.</p>
+        <div class="finder">${PASTAS.map((f,i)=>`<div data-act="pasta" data-i="${i}">📁 ${f.pasta}</div>`).join('')}</div>
+        <div class="foot"><button class="btn bs" data-act="fecha">Cancelar</button></div>`;
+    } else if (m.t==='add'){
+      const f = PASTAS[m.i]; const ja = S.ext[f.id];
+      const msgKey = f.key ? 'A pasta já tem a linha <code>key</code>: o ID fica igual nos dois Macs.' : 'A pasta não tinha a linha <code>key</code>: o Manager cria uma na cópia, e o ID fica igual nos dois Macs. A pasta original não muda.';
+      h = `<h3>Adicionar "${f.nome}" ${f.ver}</h3>
+        <p class="msg">ID <code>${IDS[f.id]}</code>. ${msgKey}</p>
+        ${ja ? `<p class="msg w">Já está em ${usam(f.id).length} perfis na versão ${ja.ver}. Nos que você marcar e que já a usam, ela é atualizada.</p>` : ''}
+        <div class="sec">Em quais perfis?</div><div class="pick">
+        ${S.p.map(p=>`<label><input type="checkbox" data-pick="${p.id}" ${m.alvos.includes(p.id)?'checked':''}> ${p.nome} ${stChip(p)} ${S.uso[p.id][f.id]?`<span class="chip">já tem ${S.uso[p.id][f.id]}</span>`:''}
+          ${p.st==='outro'&&m.alvos.includes(p.id)?'<span class="msg w">vai ser pulado (sem a trava)</span>':''}</label>`).join('')}</div>
+        <div class="foot"><button class="btn bs" data-act="fecha">Cancelar</button><button class="btn bp" data-act="okadd" ${m.alvos.length?'':'disabled'}>Adicionar em ${m.alvos.length} perfil(s)</button></div>`;
+    } else if (m.t==='upd'){
+      const e = S.ext[m.e]; const f = m.i==null ? null : PASTAS[m.i];
+      if (!f){
+        h = `<h3>Atualizar "${e.nome}" (hoje ${e.ver})</h3><p class="msg">Escolha a pasta da versão nova.</p>
+          <div class="finder">${PASTAS.map((x,i)=>`<div data-act="updpasta" data-i="${i}">📁 ${x.pasta}</div>`).join('')}</div>
+          <div class="foot"><button class="btn bs" data-act="fecha">Cancelar</button></div>`;
+      } else if (f.id!==m.e){
+        h = `<h3>Atualizar "${e.nome}"</h3><p class="msg e">Esta pasta é do "${f.nome}", não do "${e.nome}" (o ID é outro). Escolha uma pasta do ${e.nome}.</p>
+          <div class="foot"><button class="btn bs" data-act="fecha">Cancelar</button><button class="btn bp" data-act="updvolta">Escolher outra pasta</button></div>`;
+      } else {
+        h = `<h3>Atualizar "${e.nome}": ${e.ver} → ${f.ver}</h3><p class="msg">Mesmo ID ✓. O que a extensão guardou em cada perfil continua.</p>
+          <div class="sec">Nos perfis que a usam</div><div class="pick">
+          ${usam(m.e).map(p=>`<label><input type="checkbox" data-pick="${p.id}" ${m.alvos.includes(p.id)?'checked':''}> ${p.nome} <span class="chip">${S.uso[p.id][m.e]}</span> ${stChip(p)}
+            ${p.st==='outro'&&m.alvos.includes(p.id)?'<span class="msg w">vai ser pulado</span>':''}</label>`).join('')}</div>
+          <div class="foot"><button class="btn bs" data-act="fecha">Cancelar</button><button class="btn bp" data-act="okupd" ${m.alvos.length?'':'disabled'}>Atualizar em ${m.alvos.length} perfil(s)</button></div>`;
+      }
+    } else if (m.t==='tirar'){
+      const e = S.ext[m.e];
+      h = `<h3>Tirar "${e.nome}" de quais perfis?</h3><p class="msg">A cópia sai da pasta do perfil; o que a extensão guardou fica, e volta se você a adicionar de novo.</p><div class="pick">
+        ${usam(m.e).map(p=>`<label><input type="checkbox" data-pick="${p.id}" ${m.alvos.includes(p.id)?'checked':''}> ${p.nome} ${stChip(p)}</label>`).join('')}</div>
+        <div class="foot"><button class="btn bs" data-act="fecha">Cancelar</button><button class="btn bd" data-act="oktirar" ${m.alvos.length?'':'disabled'}>Tirar de ${m.alvos.length} perfil(s)</button></div>`;
+    } else if (m.t==='res'){
+      const ok = m.res.filter(x=>x.r==='ok').length, pul = m.res.length-ok;
+      h = `<h3>${m.rotulo}: ${ok} feito(s)${pul?`, ${pul} pulado(s)`:''}</h3>
+        <table class="res" style="width:100%">${m.res.map(x=>`<tr><td>${x.r==='ok'?'✅':'🔒'} ${P(x.id).nome}</td><td class="msg ${x.r==='ok'?'':'w'}">${x.m}</td></tr>`).join('')}</table>
+        <div class="foot">${S.faltaram?'<button class="btn bs" data-act="retry">Tentar de novo nos que faltaram</button>':''}<button class="btn bp" data-act="fecha">Fechar</button></div>`;
+    }
+    return `<div class="overlay"><div class="modal">${h}</div></div>`;
+  }
+
+  function side(extra){
+    return `<div class="side"><div class="hd">Perfis <button class="btn bs bsm">+ Novo</button></div><div class="list">
+      ${S.p.map(p=>`<div class="row ${S.sel===p.id&&S.page==='perfil'?'sel':''}" data-act="selp" data-id="${p.id}">
+        <span class="dot ${p.st==='aberto'?'run':p.st==='outro'?'lock':''}"></span><span class="nm">${p.p||''}${p.nome}</span>
+        ${extra?extra(p):''}${p.st==='outro'?'<span class="meta">🔒</span>':''}</div>`).join('')}</div></div>`;
+  }
+  function frame(sideHtml, topHtml, contentHtml){
+    const faixa = S.faltaram ? `<div class="banner w">🔒 ${S.faltaram.ids.length} perfil(s) ficaram sem a mudança "${S.faltaram.rotulo}" (com ${OUTRO}). <button class="btn bl" data-act="retry">Tentar de novo</button></div>` : '';
+    return `${faixa}<div class="body">${sideHtml}<div class="main"><div class="top">${topHtml}</div><div class="content">${contentHtml}</div></div></div>${modalHtml()}`;
+  }
+
+  // ----- A: dentro de cada perfil
+  function VA(){
+    const p = P(S.sel); const meu = S.uso[p.id]; const ro = p.st==='outro';
+    const lista = Object.keys(meu).map(e=>{
+      const outros = usam(e).filter(x=>x.id!==p.id).map(x=>x.nome);
+      const velho = meu[e]!==S.ext[e].ver;
+      return `<div class="ext"><div class="ic">🧩</div><div class="tx"><div class="t">${S.ext[e].nome} <span class="chip">${meu[e]}</span> ${velho?`<span class="chip c-info">há ${S.ext[e].ver} em outro perfil</span>`:''}</div>
+        <div class="msg">ID <code>${IDS[e]}</code></div><div class="msg">${outros.length?'Também em: '+outros.join(', '):'Só neste perfil'}</div></div>
+        <div class="acts">${ro?'':`<button class="btn bs bsm" data-act="updA" data-e="${e}">Atualizar…</button><button class="btn bs bsm" data-act="usarA" data-e="${e}">Usar também em…</button><button class="btn bs bsm" data-act="tirarA" data-e="${e}">Tirar</button>`}</div></div>`;
+    }).join('') || '<p class="msg">Nenhuma extensão neste perfil.</p>';
+    const top = `<div><b>${p.nome}</b> ${stChip(p)}</div><div style="display:flex;gap:6px"><button class="btn bs bsm">Editar</button><button class="btn bp bsm" ${ro?'disabled':''}>${ro?'Em uso':p.st==='aberto'?'Fechar':'Abrir'}</button></div>`;
+    const body = `<div class="msg">Configurações do perfil › …proxy, fuso, idioma…</div>
+      <div class="sec">Extensões</div>
+      ${ro?`<p class="msg w">🔒 Com ${OUTRO} desde ${p.desde}: só para ver. Para mudar, espere ele fechar.</p>`:''}
+      ${lista}
+      ${ro?'':'<button class="btn bs bsm" data-act="addA" style="margin-top:6px">+ Adicionar pasta de extensão…</button>'}
+      <p class="msg" style="margin-top:14px">Para ver tudo de uma vez: cada perfil da lista à esquerda mostra 🧩 e quantas extensões tem.</p>`;
+    return frame(side(p=>`<span class="meta">🧩${Object.keys(S.uso[p.id]).length}</span>`), top, body);
+  }
+
+  // ----- B: tela Extensões, um cartão por extensão
+  function VB(){
+    if (S.page==='perfil'){
+      const p = P(S.sel); const meu = S.uso[p.id];
+      const top = `<div><b>${p.nome}</b> ${stChip(p)}</div><div style="display:flex;gap:6px"><button class="btn bs bsm" data-act="pageExt">🧩 Extensões</button><button class="btn bp bsm">${p.st==='outro'?'Em uso':p.st==='aberto'?'Fechar':'Abrir'}</button></div>`;
+      const body = `<div class="msg">Configurações do perfil › …proxy, fuso, idioma…</div><div class="sec">Extensões deste perfil</div>
+        <div class="chips">${Object.keys(meu).map(e=>`<span class="chip">🧩 ${S.ext[e].nome} ${meu[e]}</span>`).join('') || '<span class="msg">nenhuma</span>'}</div>
+        <button class="btn bl" data-act="pageExt">Adicionar, atualizar ou tirar na tela Extensões</button>`;
+      return frame(side(), top, body);
+    }
+    const cards = Object.keys(S.ext).map(e=>{
+      const us = usam(e); const x = S.ext[e];
+      const velhos = us.filter(p=>S.uso[p.id][e]!==x.ver);
+      return `<div class="card"><div style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap"><div class="ext" style="background:none;padding:0;flex:1;margin:0"><div class="ic">🧩</div><div class="tx">
+        <div class="t">${x.nome} <span class="chip">${x.ver}</span></div><div class="msg">ID <code>${IDS[e]}</code></div></div></div>
+        <div class="ext acts" style="background:none;padding:0;margin:0"><button class="btn bs bsm" data-act="updB" data-e="${e}">Atualizar…</button><button class="btn bs bsm" data-act="addB" data-e="${e}">Adicionar a perfis…</button><button class="btn bs bsm" data-act="tirarB" data-e="${e}">Tirar de perfis…</button></div></div>
+        <div class="msg" style="margin-top:8px">Em ${us.length} perfil(s)${velhos.length?` · <span style="color:var(--info)">${velhos.length} ainda numa versão antiga</span>`:''}:</div>
+        <div class="chips">${us.map(p=>`<span class="chip ${S.uso[p.id][e]!==x.ver?'c-info':''}">${p.st==='outro'?'🔒 ':''}${p.nome}${S.uso[p.id][e]!==x.ver?' · '+S.uso[p.id][e]:''}${p.st==='outro'?'':` <span class="x" data-act="tirar1" data-e="${e}" data-id="${p.id}" title="Tirar deste perfil">✕</span>`}</span>`).join('') || '<span class="msg">nenhum</span>'}</div></div>`;
+    }).join('');
+    const top = `<div><button class="btn bl" data-act="pagePerfil">← Perfis</button> <b>Extensões</b></div><button class="btn bp bsm" data-act="addNova">+ Adicionar extensão…</button>`;
+    return frame(side(), top, `<p class="msg" style="margin-bottom:10px">Cada extensão mostra a versão mais nova que algum perfil tem; o selo azul marca os perfis que ainda estão numa versão antiga.</p>${cards}`);
+  }
+
+  // ----- C: tabela perfis × extensões
+  function VC(){
+    const es = Object.keys(S.ext);
+    const nPend = Object.keys(S.pend).length;
+    const head = `<tr><th>Perfil</th>${es.map(e=>`<th>${S.ext[e].nome}<div class="msg">${S.ext[e].ver} · <button class="btn bl" data-act="updB" data-e="${e}">Atualizar…</button></div></th>`).join('')}<th><button class="btn bs bsm" data-act="addNova">+ Extensão…</button></th></tr>`;
+    const rows = S.p.map(p=>`<tr class="${p.st==='outro'?'lock':''}"><td>${p.nome} ${stChip(p)}</td>${es.map(e=>{
+        const k = p.id+':'+e; const tem = k in S.pend ? S.pend[k] : !!S.uso[p.id][e];
+        const velho = S.uso[p.id][e] && S.uso[p.id][e]!==S.ext[e].ver;
+        return `<td class="${k in S.pend?'pend':''}"><input type="checkbox" data-cell="${k}" ${tem?'checked':''}>${velho?` <span class="chip c-info">${S.uso[p.id][e]}</span>`:''}</td>`;
+      }).join('')}<td></td></tr>`).join('');
+    const top = `<div><b>Extensões por perfil</b></div><div style="display:flex;gap:6px;align-items:center"><span class="msg">${nPend} mudança(s) por aplicar</span><button class="btn bs bsm" data-act="desfaz" ${nPend?'':'disabled'}>Desfazer</button><button class="btn bp bsm" data-act="aplicaC" ${nPend?'':'disabled'}>Aplicar</button></div>`;
+    return frame(`<div class="side"><div class="hd">Perfis</div><div class="list"><p class="msg" style="padding:8px">(nesta tela a lista de perfis vira as linhas da tabela)</p></div></div>`, top,
+      `<div style="overflow:auto"><table class="m">${head}${rows}</table></div><p class="msg" style="margin-top:10px">Marque e desmarque; nada muda até "Aplicar". Células em roxo são mudanças por aplicar; o selo azul é uma versão antiga.</p>`);
+  }
+
+  const app = document.getElementById('app');
+  function render(){
+    app.innerHTML = ({A:VA,B:VB,C:VC})[variant]();
+    document.getElementById('vlabel').textContent = variant+' ('+NAMES[variant]+')';
+    document.getElementById('state').textContent = 'Estado: ' + S.p.map(p=>p.nome+'['+p.st+']{'+Object.entries(S.uso[p.id]).map(([e,v])=>e+'@'+v).join(',')+'}').join(' · ')
+      + (S.log.length ? '\nÚltimas ações: ' + S.log.slice(-3).join(' | ') : '');
+  }
+  const add = (e,v)=>id=>{ S.uso[id][e]=v; };
+  app.addEventListener('change', ev=>{
+    const pk = ev.target.closest('[data-pick]'); const cell = ev.target.closest('[data-cell]');
+    if (pk && S.modal){ const id=+pk.dataset.pick; const a=S.modal.alvos; pk.checked ? a.push(id) : a.splice(a.indexOf(id),1); return render(); }
+    if (cell){ const k=cell.dataset.cell; const [id,e]=k.split(':'); const orig=!!S.uso[id][e]; if (cell.checked===orig) delete S.pend[k]; else S.pend[k]=cell.checked; return render(); }
+  });
+  app.addEventListener('click', ev=>{
+    const t = ev.target.closest('[data-act]'); if (!t) return;
+    const a = t.dataset.act, e = t.dataset.e, m = S.modal;
+    if (a==='selp'){ S.sel=+t.dataset.id; S.page='perfil'; }
+    else if (a==='pageExt') S.page='ext'; else if (a==='pagePerfil') S.page='perfil';
+    else if (a==='fecha') S.modal=null;
+    else if (a==='addA') S.modal={t:'finder', titulo:'Escolher a pasta da extensão', alvos:[S.sel]};
+    else if (a==='addNova') S.modal={t:'finder', titulo:'Escolher a pasta da extensão', alvos:[]};
+    else if (a==='pasta'){ S.modal={t:'add', i:+t.dataset.i, alvos:m.alvos.slice()}; }
+    else if (a==='addB'){ const i=PASTAS.findIndex(f=>f.id===e); S.modal={t:'add', i, alvos:[], fixa:S.ext[e].ver}; }
+    else if (a==='usarA'){ const i=PASTAS.findIndex(f=>f.id===e); S.modal={t:'add', i, alvos:[], fixa:S.uso[S.sel][e]}; }
+    else if (a==='okadd'){ const f=PASTAS[m.i]; const v=m.fixa||f.ver; if(!S.ext[f.id]||S.ext[f.id].ver<v) S.ext[f.id]={nome:f.nome, ver:v}; aplicar(m.alvos, add(f.id,v), 'Adicionar '+f.nome+' '+v); }
+    else if (a==='updA'||a==='updB'){ S.modal={t:'upd', e, i:null, alvos:[]}; }
+    else if (a==='updpasta'){ m.i=+t.dataset.i; m.alvos = usam(m.e).map(p=>p.id); }
+    else if (a==='updvolta'){ m.i=null; }
+    else if (a==='okupd'){ const f=PASTAS[m.i]; S.ext[m.e].ver=f.ver; aplicar(m.alvos, add(m.e,f.ver), 'Atualizar '+f.nome+' para '+f.ver); }
+    else if (a==='tirarA'){ aplicar([S.sel], id=>{ delete S.uso[id][e]; }, 'Tirar '+S.ext[e].nome); }
+    else if (a==='tirar1'){ aplicar([+t.dataset.id], id=>{ delete S.uso[id][e]; }, 'Tirar '+S.ext[e].nome); }
+    else if (a==='tirarB'){ S.modal={t:'tirar', e, alvos:[]}; }
+    else if (a==='oktirar'){ const en=m.e; aplicar(m.alvos, id=>{ delete S.uso[id][en]; }, 'Tirar '+S.ext[en].nome); }
+    else if (a==='retry'){ const f=S.faltaram; aplicar(f.ids, f.fazer, f.rotulo+' (de novo)'); }
+    else if (a==='desfaz') S.pend={};
+    else if (a==='aplicaC'){
+      const pend = S.pend; S.pend={};
+      const ids = [...new Set(Object.keys(pend).map(k=>+k.split(':')[0]))];
+      aplicar(ids, id=>{ Object.keys(pend).filter(k=>+k.split(':')[0]===id).forEach(k=>{ const e2=k.split(':')[1]; if(pend[k]) S.uso[id][e2]=S.ext[e2].ver; else delete S.uso[id][e2]; }); }, 'Mudanças da tabela');
+      if (S.faltaram){ const ids2=S.faltaram.ids; Object.keys(pend).forEach(k=>{ if(ids2.includes(+k.split(':')[0])) S.pend[k]=pend[k]; }); S.faltaram.fazer = id=>{ Object.keys(pend).filter(k=>+k.split(':')[0]===id).forEach(k=>{ const e2=k.split(':')[1]; if(pend[k]) S.uso[id][e2]=S.ext[e2].ver; else delete S.uso[id][e2]; delete S.pend[k]; }); }; }
+    }
+    render();
+  });
+  document.getElementById('simSolta').addEventListener('click', ()=>{ P(3).st='livre'; S.log.push('Loja 03 ficou livre'); render(); });
+  document.getElementById('simReset').addEventListener('click', ()=>{ reset(); render(); });
+  function go(d){ variant = KEYS[(KEYS.indexOf(variant)+d+KEYS.length)%KEYS.length]; const u=new URL(location.href); u.searchParams.set('variant',variant); history.replaceState(null,'',u); S.modal=null; render(); }
+  document.getElementById('prev').addEventListener('click', ()=>go(-1));
+  document.getElementById('next').addEventListener('click', ()=>go(1));
+  document.addEventListener('keydown', ev=>{ if (ev.target.closest('input,textarea,select,[contenteditable]')) return; if(ev.key==='ArrowLeft')go(-1); if(ev.key==='ArrowRight')go(1); });
+  render();
+
+  // ----- perguntas: cada formulário manda uma resposta (substitui a anterior da mesma pergunta)
+  document.querySelectorAll('form.qf').forEach(f=>{
+    f.addEventListener('submit', ev=>{
+      ev.preventDefault();
+      const fd = new FormData(f); const q = f.dataset.lavishQuestion; const titulo = f.querySelector('h3').textContent;
+      const r = fd.get('resposta') || ''; const n = (fd.get('nota')||'').trim();
+      const st = f.querySelector('.st');
+      if (!r && !n){ st.textContent='marque uma opção ou escreva algo'; return; }
+      const texto = titulo + ' → ' + (r||'(sem opção)') + (n? ' · nota: '+n : '');
+      if (window.lavish && window.lavish.queuePrompt){
+        window.lavish.queuePrompt(texto, {tag:'choice', text:texto, element:f, queueKey:q, data:{question:q, answer:r, note:n, variant_vista:variant}});
+        st.textContent='guardada (falta apertar Send to Agent)'; st.classList.add('q');
+      } else { st.textContent='abra esta página pelo Lavish para enviar'; }
+    });
+  });
+})();
+</script>
+</body>
+</html>
