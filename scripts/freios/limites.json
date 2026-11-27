@@ -215,7 +215,8 @@
   "catraca": {
     "verificacoes": [
       "tamanho",
-      "comentarios"
+      "comentarios",
+      "dados_pessoais"
     ]
   }
 }

@@ -2,17 +2,19 @@ import argparse
 import sys
 from pathlib import Path
 
-from scripts.freios import autoria, binario, catraca, comentarios, externos, segredo, sintaxe, tamanho, testes
+from scripts.freios import (
+    autoria, binario, catraca, comentarios, dados_pessoais, externos, segredo, sintaxe, tamanho, testes,
+)
 from scripts.freios.git import montar_contexto, raiz_do_repositorio
 
-POR_ARQUIVO = [tamanho, comentarios, sintaxe, segredo, binario, externos]
+POR_ARQUIVO = [tamanho, comentarios, sintaxe, segredo, binario, dados_pessoais, externos]
 NO_COMMIT = [tamanho, comentarios]
 DO_REPOSITORIO = [autoria, testes]
-USO = """Os freios do repositório: tetos de tamanho, sem comentário, sintaxe, segredo, binário, lint e autoria dos commits.
+USO = """Os freios do repositório: tetos de tamanho, sem comentário, sintaxe, segredo, dados pessoais, binário, lint e autoria dos commits.
 
 --commit confere o tamanho e os comentários dos arquivos que estão no commit (gancho pre-commit).
 --tudo confere o índice inteiro, sem arquivo não rastreado, e os commits da branch contra --base (gancho pre-push e CI).
-Tamanho e comentários têm como teto a medida do arquivo na main (o ponto em que a branch saiu de --base): encolher passa, crescer reprova e arquivo novo nasce dentro dos limites.
+Tamanho, comentários e dados pessoais têm como teto a medida do arquivo na main (o ponto em que a branch saiu de --base): encolher passa, crescer reprova e arquivo novo nasce dentro dos limites.
 Sai com 0 quando tudo passa e com 1 quando alguma verificação falha."""
 LINHAS_POR_VERIFICACAO = 15
 
