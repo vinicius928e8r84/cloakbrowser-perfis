@@ -1,0 +1,495 @@
+<!doctype html>
+<!-- PROTÓTIPO DESCARTÁVEL: três rascunhos da tela da lista de aquecimento e da lista de buscas, trocados por ?variant=A|B|C e pela barra de baixo. Dados falsos, nada é salvo. -->
+<html lang="pt-BR" data-lavish-annotate="on">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Protótipo: lista de aquecimento e lista de buscas</title>
+<style>
+  :root{--s0:#0a0a0a;--s1:#111;--s2:#1a1a1a;--s3:#222;--s4:#2a2a2a;--b:#2a2a2a;--bh:#3a3a3a;--ac:#6366f1;--ach:#818cf8;
+    --g1:#f3f4f6;--g2:#e5e7eb;--g3:#9ca3af;--g4:#6b7280;--ok:#34d399;--warn:#fbbf24;--err:#f87171;--info:#60a5fa}
+  *{box-sizing:border-box} body{margin:0;background:var(--s0);color:var(--g2);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;font-size:14px;line-height:1.45}
+  h1,h2,h3{margin:0} code{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--g3)}
+  .doc{max-width:1180px;margin:0 auto;padding:24px 20px 120px}
+  .lead{color:var(--g3);max-width:880px}
+  .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;background:var(--s3);color:var(--g3)}
+  .proto-note{margin:14px 0;padding:10px 14px;border:1px dashed var(--warn);border-radius:8px;color:var(--warn);font-size:13px}
+  .sim{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0;font-size:12px;color:var(--g3)}
+  .app{height:660px;border:1px solid var(--b);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;background:var(--s1);position:relative;min-width:0}
+  .whd{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--b);font-size:13px;font-weight:600;gap:10px}
+  .wbody{flex:1;display:flex;min-height:0}
+  .nav{width:200px;flex-shrink:0;border-right:1px solid var(--b);padding:10px 8px;overflow:auto}
+  .nav .g{font-size:10.5px;font-weight:600;color:var(--g4);text-transform:uppercase;letter-spacing:.06em;margin:10px 8px 4px}
+  .nav div.i{padding:6px 10px;border-radius:6px;font-size:13px;cursor:pointer;color:var(--g3)} .nav div.i:hover{background:var(--s2)} .nav div.i.sel{background:var(--s3);color:var(--g1)}
+  .pane{flex:1;display:flex;flex-direction:column;min-width:0;min-height:0}
+  .phd{padding:12px 16px 8px;border-bottom:1px solid var(--b)}
+  .phd h2{font-size:15px} .sub{font-size:12px;color:var(--g4)}
+  .pc{flex:1;overflow:auto;padding:12px 16px;min-width:0;min-height:0}
+  .cols{display:flex;min-height:0;flex:1}
+  .clist{width:190px;flex-shrink:0;border-right:1px solid var(--b);overflow:auto;padding:8px}
+  .clist div.i{display:flex;justify-content:space-between;gap:6px;padding:6px 8px;border-radius:6px;font-size:13px;cursor:pointer;min-width:0}
+  .clist div.i:hover{background:var(--s2)} .clist div.i.sel{background:var(--s3);color:var(--g1)}
+  .clist .n{font-size:11px;color:var(--g4);white-space:nowrap}
+  .tabs{display:flex;gap:4px;margin:8px 0} .tab{padding:5px 12px;border-radius:6px;font-size:13px;cursor:pointer;background:none;border:1px solid var(--b);color:var(--g3);font-family:inherit}
+  .tab.sel{background:var(--s3);color:var(--g1);border-color:var(--bh)}
+  .btn{padding:6px 12px;border-radius:6px;font-size:13px;font-weight:500;border:0;cursor:pointer;font-family:inherit}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .bp{background:var(--ac);color:#fff}.bp:hover:not(:disabled){background:var(--ach)} .bs{background:var(--s3);color:var(--g2)}.bs:hover:not(:disabled){background:var(--s4)}
+  .bl{border:0;background:none;color:var(--ach);padding:2px 4px;text-decoration:underline;font-size:12px}
+  .bsm{padding:3px 8px;font-size:12px}
+  .input,select.input{background:var(--s2);border:1px solid var(--b);border-radius:6px;color:var(--g1);padding:5px 8px;font-family:inherit;font-size:13px;min-width:0}
+  .input:disabled{opacity:.6}
+  .chip{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:2px 8px;border-radius:999px;white-space:nowrap;background:var(--s3);color:var(--g3);border:1px solid transparent;cursor:pointer;font-family:inherit}
+  .chip.sel{border-color:var(--ach);color:var(--g1)} .chip .x{opacity:.6} .chip .x:hover{opacity:1;color:var(--err)}
+  .c-city{background:rgba(96,165,250,.15);color:var(--info)}
+  .chips{display:flex;gap:4px;flex-wrap:wrap}
+  table.t{width:100%;border-collapse:collapse;font-size:13px} table.t td{padding:4px 6px;border-bottom:1px solid var(--b);vertical-align:middle}
+  table.t td.w{width:100%} table.t tr.new td{background:rgba(52,211,153,.06)} table.t tr.mod td{background:rgba(99,102,241,.08)}
+  table.t input.input{width:100%}
+  .x-btn{background:none;border:0;color:var(--g4);cursor:pointer;font-size:14px} .x-btn:hover{color:var(--err)}
+  .savebar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 16px;border-top:1px solid var(--b);background:var(--s2);font-size:12.5px}
+  .banner{padding:8px 14px;font-size:12.5px;border-bottom:1px solid}
+  .banner.w{background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.3);color:var(--warn)}
+  .banner.e{background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.3);color:var(--err)}
+  .banner.i{background:rgba(96,165,250,.08);border-color:rgba(96,165,250,.3);color:var(--info)}
+  .banner ul{margin:4px 0 0 18px;padding:0;color:var(--g2)}
+  .grp{border:1px solid var(--b);border-radius:8px;margin-bottom:8px;background:var(--s0)}
+  .grp > summary{padding:7px 10px;cursor:pointer;font-size:13px;font-weight:600;display:flex;justify-content:space-between}
+  .grp .gb{padding:4px 10px 10px}
+  .twoc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+  textarea.code{width:100%;height:100%;min-height:380px;background:var(--s0);border:1px solid var(--b);border-radius:6px;color:var(--g1);padding:8px 10px;font-family:ui-monospace,Consolas,monospace;font-size:12.5px;line-height:1.6;resize:none}
+  .errs{font-size:12px;color:var(--err);margin-top:4px}
+  .ctabs{display:flex;gap:2px;overflow-x:auto;border-bottom:1px solid var(--b);padding:0 10px}
+  .ctabs div{padding:8px 10px;font-size:12.5px;cursor:pointer;color:var(--g3);border-bottom:2px solid transparent;white-space:nowrap}
+  .ctabs div.sel{color:var(--g1);border-bottom-color:var(--ac)}
+  .overlay{position:absolute;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:7}
+  .modal{width:min(560px,92%);max-height:92%;overflow:auto;background:var(--s1);border:1px solid var(--bh);border-radius:12px;padding:18px}
+  .modal h3{font-size:16px;margin-bottom:8px}
+  .drawer{position:absolute;top:0;right:0;bottom:0;width:min(420px,92%);background:var(--s1);border-left:1px solid var(--bh);z-index:6;display:flex;flex-direction:column;box-shadow:-10px 0 30px rgba(0,0,0,.5)}
+  .drawer .dh{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--b);font-weight:600}
+  .drawer .db{flex:1;overflow:auto;padding:10px 14px}
+  .ver{padding:8px 10px;border:1px solid var(--b);border-radius:8px;margin-bottom:6px;font-size:12.5px}
+  .ver.cur{border-color:var(--ok)} .ver .d{color:var(--g4);font-size:11.5px}
+  .diff{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;margin-top:6px} .diff .a{color:var(--ok)} .diff .r{color:var(--err)}
+  .foot{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+  .state{font-family:ui-monospace,Consolas,monospace;font-size:11px;color:var(--g4);background:var(--s1);border:1px solid var(--b);border-radius:8px;padding:8px 10px;margin-top:8px;white-space:pre-wrap;max-height:140px;overflow:auto}
+  .muted{color:var(--g4);font-size:12px}
+  #switcher{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);display:flex;align-items:center;gap:6px;background:#fff;color:#111;border-radius:999px;padding:6px 8px;box-shadow:0 6px 24px rgba(0,0,0,.5);z-index:50;font-size:13px;font-weight:600}
+  #switcher button{border:0;background:#eee;border-radius:999px;width:30px;height:30px;cursor:pointer;font-size:15px}
+  #switcher span{padding:0 10px;white-space:nowrap}
+  section.round{margin-top:34px} section.round h2{font-size:18px;margin-bottom:6px}
+  .settled li,.later li{margin:4px 0;color:var(--g3)}
+  .qf{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:14px 16px;margin:12px 0}
+  .qf h3{font-size:15px;margin-bottom:4px} .qf .why{font-size:12.5px;color:var(--g3);margin-bottom:8px}
+  .qf label{display:block;padding:5px 8px;border-radius:6px;cursor:pointer} .qf label:hover{background:var(--s2)}
+  .qf .rec{font-size:11px;color:var(--ok);margin-left:6px;font-weight:600}
+  .qf textarea{width:100%;min-height:44px;margin-top:6px;background:var(--s2);border:1px solid var(--b);border-radius:6px;color:var(--g1);padding:6px 8px;font-family:inherit;font-size:13px}
+  .qf .qfoot{display:flex;gap:10px;align-items:center;margin-top:8px} .qf .st{font-size:12px;color:var(--g4)} .qf .st.q{color:var(--ok)}
+</style>
+</head>
+<body>
+<div class="doc">
+  <span class="tag">Mapa: aquecimento, uso com trava e perfis sincronizados · ticket "Como é a tela da lista de aquecimento e da lista de buscas?"</span>
+  <h1 style="font-size:24px;margin:10px 0 6px">Como você vê e edita a lista de aquecimento e a lista de buscas</h1>
+  <p class="lead">Três rascunhos diferentes, no visual do Manager. Troque entre eles pela barra branca embaixo (ou pelas setas ← →). Em cada um, experimente: <b>trocar de país</b> e passar de sites para buscas; <b>adicionar</b> um site escolhendo o tipo; <b>marcar uma busca "com cidade"</b>; <b>criar a lista de um país novo</b>; <b>salvar</b>. Depois use os botões de simulação: o outro Mac salvando no meio da sua edição, e o servidor fora do alcance. Por fim, responda as perguntas abaixo.</p>
+  <div class="proto-note">Rascunho descartável: os sites e as buscas são poucos exemplos inventados (as listas de verdade terão 60 sites e 100 buscas cada); nada é salvo. "Mac de casa" é este Mac; "Mac do escritório" é o outro.</div>
+
+  <div class="sim">
+    <span>Simular:</span>
+    <button class="btn bs bsm" id="simOutro" type="button">O Mac do escritório salva as listas agora</button>
+    <button class="btn bs bsm" id="simOff" type="button">Servidor fora do alcance (liga/desliga)</button>
+    <button class="btn bs bsm" id="simReset" type="button">Recomeçar</button>
+  </div>
+  <div class="app" id="app"></div>
+  <div class="state" id="state"></div>
+
+  <section class="round">
+    <h2>Já decidido (não precisa responder)</h2>
+    <ul class="settled">
+      <li>As duas listas começam com as sugestões, são iguais nos dois Macs e viajam pelo servidor ("As listas de aquecimento e de buscas começam vazias ou com sugestões…").</li>
+      <li>Uma lista geral, em inglês, e uma para cada um de nove países: Estados Unidos, Brasil, Reino Unido, Canadá, Portugal, Alemanha, França, Espanha e México; 60 sites e 100 buscas em cada. Um país sem lista usa a geral ("Quem escreve as sugestões…").</li>
+      <li>Cada site e cada busca tem um tipo (notícias, compras só olhando, vídeo, referência, clima e mapas, esportes, receitas e casa, serviços públicos, conteúdo adulto); o que você adiciona escolhe o tipo; algumas buscas são "com cidade" ("O aquecimento escolhe sites e buscas pela pessoa…").</li>
+      <li>Salvar confere se o outro Mac salvou antes; se sim, não grava e deixa suas mudanças na tela. Sem servidor, a tela mostra a última cópia só para leitura, com a data. Cada salvar vira uma versão guardada, com "Versões anteriores" e "Voltar a esta". A tela mostra "Última mudança" com Mac e hora ("Como as listas viajam pelo servidor…").</li>
+      <li>Tudo em português.</li>
+    </ul>
+  </section>
+
+  <section class="round" id="perguntas">
+    <h2>Esta rodada</h2>
+    <p class="lead">Marque uma opção em cada pergunta (a recomendada está indicada), escreva se quiser, e aperte <b>Guardar resposta</b>. No fim, aperte <b>Send to Agent</b> (no painel do Lavish) para me mandar tudo de uma vez. Pode deixar alguma em branco.</p>
+
+    <form class="qf" data-lavish-question="q1-variante">
+      <h3>1. Qual rascunho fica mais perto do que você quer?</h3>
+      <div class="why">A: uma tabela, com os países numa coluna à esquerda, abas Sites e Buscas, e filtro por tipo. B: um país por vez, sites e buscas lado a lado, agrupados por tipo em etiquetas. C: cada lista como texto, uma linha por site ou busca, que você edita como num bloco de notas.</div>
+      <label><input type="radio" name="resposta" value="A: tabela com países à esquerda e filtro por tipo"> A: tabela com os países à esquerda e filtro por tipo<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="B: sites e buscas lado a lado, agrupados por tipo"> B: sites e buscas lado a lado, agrupados por tipo</label>
+      <label><input type="radio" name="resposta" value="C: editar como texto, uma linha por item"> C: editar como texto, uma linha por item</label>
+      <label><input type="radio" name="resposta" value="Mistura (explico abaixo)"> Mistura (explico abaixo, por exemplo "a tabela do A com o 'colar várias linhas' do C")</label>
+      <textarea name="nota" placeholder="Comentário (opcional)"></textarea>
+      <div class="qfoot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q2-onde">
+      <h3>2. Onde a tela fica?</h3>
+      <div class="why">Hoje as Configurações são uma janelinha com a chave de licença. Já está decidido que elas ganham "Compartilhamento". As listas são as únicas configurações comuns aos dois Macs.</div>
+      <label><input type="radio" name="resposta" value="Configurações maiores, com um menu à esquerda: Este Mac, Compartilhamento e Aquecimento (marcado 'igual nos dois Macs')"> Nas Configurações, que viram uma janela maior com menu à esquerda: "Este Mac", "Compartilhamento" e "Aquecimento" (com o selo "igual nos dois Macs")<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="Um botão Listas no andamento do lote de aquecimento"> Um botão "Listas" no andamento do lote de aquecimento (o botão do topo)</label>
+      <label><input type="radio" name="resposta" value="Nos dois lugares"> Nos dois lugares (o do lote abre a mesma tela das Configurações)</label>
+      <textarea name="nota" placeholder="Comentário (opcional)"></textarea>
+      <div class="qfoot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q3-pais-novo">
+      <h3>3. Você cria a lista de um país novo (por exemplo, Itália). Com o que ela começa?</h3>
+      <div class="why">Enquanto um país não tem lista, os perfis com proxy dele usam a geral. Experimente "+ País" no rascunho.</div>
+      <label><input type="radio" name="resposta" value="Começa vazia, com o botão 'Copiar da lista geral'; vazia, o país segue usando a geral"> Começa vazia, com o botão "Copiar da lista geral"; enquanto estiver vazia, o país segue usando a geral<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="Começa já com uma cópia da lista geral"> Começa já com uma cópia da geral, para você mudar</label>
+      <label><input type="radio" name="resposta" value="Pergunta de qual lista copiar (geral ou outro país)"> Pergunta de qual lista copiar (a geral ou a de outro país, por exemplo a da Espanha)</label>
+      <textarea name="nota" placeholder="Comentário (opcional)"></textarea>
+      <div class="qfoot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q4-tirar-pais">
+      <h3>4. Dá para tirar a lista de um país inteiro?</h3>
+      <div class="why">Nada é apagado de verdade: a versão de antes fica em "Versões anteriores".</div>
+      <label><input type="radio" name="resposta" value="Sim: 'Tirar a lista deste país', com confirmação; o país volta a usar a geral"> Sim: "Tirar a lista deste país", com confirmação; o país volta a usar a geral<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="Não: só dá para tirar os itens um a um"> Não: só dá para tirar os sites e as buscas um a um</label>
+      <textarea name="nota" placeholder="Comentário (opcional)"></textarea>
+      <div class="qfoot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q5-cidade">
+      <h3>5. Como se marca uma busca "com cidade"?</h3>
+      <div class="why">O aquecimento põe o nome da cidade da saída do proxy na busca ("previsão do tempo campinas").</div>
+      <label><input type="radio" name="resposta" value="Caixinha 'com cidade'; a cidade vai no fim da busca"> Uma caixinha "com cidade" em cada busca; a cidade vai no fim ("previsão do tempo amanhã" → "previsão do tempo amanhã campinas")<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="Escrevendo {cidade} no lugar certo da busca"> Escrevendo <code>{cidade}</code> onde ela entra ("restaurantes em {cidade} aberto agora")</label>
+      <textarea name="nota" placeholder="Comentário (opcional)"></textarea>
+      <div class="qfoot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q6-conflito">
+      <h3>6. O outro Mac salvou enquanto você editava. Como você refaz as suas mudanças?</h3>
+      <div class="why">Já decidido: não grava, e as mudanças continuam na tela. Experimente: mude algo, aperte "O Mac do escritório salva as listas agora" e depois Salvar.</div>
+      <label><input type="radio" name="resposta" value="Aviso no alto com a lista das minhas mudanças; 'Recarregar' traz a versão nova e a lista fica visível para eu refazer à mão"> O aviso no alto lista as suas mudanças ("+ site g1.globo.com no Brasil"); "Recarregar" traz a versão do outro e a lista continua ali para você refazer à mão<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="Recarregar e repor as minhas mudanças por cima, sem salvar, para eu conferir"> "Recarregar e repor as minhas": traz a versão do outro e repõe as suas mudanças por cima, ainda sem salvar, para você conferir</label>
+      <label><input type="radio" name="resposta" value="Só o aviso e Recarregar; minhas mudanças somem ao recarregar"> Só o aviso e "Recarregar"; as suas mudanças somem ao recarregar</label>
+      <textarea name="nota" placeholder="Comentário (opcional)"></textarea>
+      <div class="qfoot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q7-versoes">
+      <h3>7. Como "Versões anteriores" aparece?</h3>
+      <div class="why">Cada salvar vira versão guardada para sempre. Experimente o botão "Versões anteriores" no rascunho.</div>
+      <label><input type="radio" name="resposta" value="Painel do lado: data, Mac e o que mudou (+ e −); 'Voltar a esta' grava uma versão nova"> Um painel do lado: data, Mac e o que mudou em cada uma (linhas com + e −); "Voltar a esta" grava uma versão nova<span class="rec">recomendo</span></label>
+      <label><input type="radio" name="resposta" value="Painel do lado só com data, Mac e contagem, sem o que mudou"> O mesmo painel só com data, Mac e "3 sites e 1 busca mudaram", sem dizer quais</label>
+      <textarea name="nota" placeholder="Comentário (opcional)"></textarea>
+      <div class="qfoot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+
+    <form class="qf" data-lavish-question="q8-geral">
+      <h3>8. Algo mais na tela que faltou ou sobrou?</h3>
+      <textarea name="nota" placeholder="Escreva livre"></textarea>
+      <div class="qfoot"><button class="btn bp bsm" type="submit">Guardar resposta</button><span class="st">não guardada</span></div>
+    </form>
+  </section>
+
+  <section class="round">
+    <h2>Depois (fica para outros tickets ou para a implementação)</h2>
+    <ul class="later">
+      <li>O que o aquecimento faz num site adulto que pergunta "Você tem mais de 18 anos?" segue na névoa do mapa.</li>
+      <li>Como a IA tira os gostos e a cidade da pessoa de cada perfil segue no ticket "Como uma IA tira os gostos e a cidade da pessoa de cada perfil dos dados que o perfil já tem?".</li>
+      <li>Escrever as sugestões de verdade (60 sites e 100 buscas por lista) é trabalho da implementação.</li>
+    </ul>
+  </section>
+</div>
+
+<div id="switcher" aria-label="Trocar rascunho">
+  <button type="button" id="prev" aria-label="Rascunho anterior">←</button>
+  <span id="vlabel"></span>
+  <button type="button" id="next" aria-label="Próximo rascunho">→</button>
+</div>
+
+<script>
+(function(){
+  const NAMES = {A:'Tabela, países à esquerda', B:'Lado a lado, por tipo', C:'Editar como texto'};
+  const KEYS = ['A','B','C'];
+  let variant = new URLSearchParams(location.search).get('variant');
+  if (!KEYS.includes(variant)) variant = 'A';
+  const TIPOS = ['notícias','compras só olhando','vídeo','referência','clima e mapas','esportes','receitas e casa','serviços públicos','conteúdo adulto'];
+  const PAISES = {geral:'🌐 Geral (inglês)', us:'🇺🇸 Estados Unidos', br:'🇧🇷 Brasil', gb:'🇬🇧 Reino Unido', ca:'🇨🇦 Canadá', pt:'🇵🇹 Portugal', de:'🇩🇪 Alemanha', fr:'🇫🇷 França', es:'🇪🇸 Espanha', mx:'🇲🇽 México'};
+  const NOVOS = {it:'🇮🇹 Itália', ar:'🇦🇷 Argentina', jp:'🇯🇵 Japão', nl:'🇳🇱 Países Baixos'};
+  const S0 = {
+    geral:{sites:[['wikipedia.org','referência'],['bbc.com/news','notícias'],['youtube.com','vídeo'],['weather.com','clima e mapas'],['espn.com','esportes'],['allrecipes.com','receitas e casa'],['amazon.com','compras só olhando'],['exemplo-adulto.com','conteúdo adulto']],
+      buscas:[['weather tomorrow','clima e mapas',1],['easy banana bread recipe','receitas e casa',0],['football scores today','esportes',0],['how tall is mount everest','referência',0],['news today','notícias',1]]},
+    us:{sites:[['nytimes.com','notícias'],['weather.gov','clima e mapas'],['usa.gov','serviços públicos'],['target.com','compras só olhando'],['nfl.com','esportes'],['foodnetwork.com','receitas e casa']],
+      buscas:[['weather this weekend','clima e mapas',1],['best pizza near me','receitas e casa',1],['nba standings','esportes',0],['dmv hours','serviços públicos',1]]},
+    br:{sites:[['g1.globo.com','notícias'],['ge.globo.com','esportes'],['tudogostoso.com.br','receitas e casa'],['gov.br','serviços públicos'],['climatempo.com.br','clima e mapas'],['mercadolivre.com.br','compras só olhando'],['pt.wikipedia.org','referência']],
+      buscas:[['previsão do tempo amanhã','clima e mapas',1],['receita de bolo de cenoura','receitas e casa',0],['tabela do brasileirão','esportes',0],['farmácia aberta agora','serviços públicos',1],['notícias de hoje','notícias',0]]},
+    gb:{sites:[['bbc.co.uk','notícias'],['metoffice.gov.uk','clima e mapas'],['gov.uk','serviços públicos']],buscas:[['weather tomorrow','clima e mapas',1],['premier league table','esportes',0]]},
+    ca:{sites:[['cbc.ca','notícias'],['weather.gc.ca','clima e mapas']],buscas:[['weather tomorrow','clima e mapas',1]]},
+    pt:{sites:[['publico.pt','notícias'],['ipma.pt','clima e mapas']],buscas:[['tempo amanhã','clima e mapas',1]]},
+    de:{sites:[['tagesschau.de','notícias'],['wetter.de','clima e mapas']],buscas:[['wetter morgen','clima e mapas',1]]},
+    fr:{sites:[['lemonde.fr','notícias'],['meteofrance.com','clima e mapas']],buscas:[['météo demain','clima e mapas',1]]},
+    es:{sites:[['elpais.com','notícias'],['aemet.es','clima e mapas']],buscas:[['tiempo mañana','clima e mapas',1]]},
+    mx:{sites:[['eluniversal.com.mx','notícias'],['gob.mx','serviços públicos']],buscas:[['clima mañana','clima e mapas',1]]}
+  };
+  const REAIS = {sites:60, buscas:100};
+  const clone = o => JSON.parse(JSON.stringify(o));
+  function mk(){ const o={}; for(const k in S0) o[k]={sites:S0[k].sites.map(([u,t])=>({u,t})), buscas:S0[k].buscas.map(([u,t,c])=>({u,t,c:!!c}))}; return o; }
+  let S;
+  function reset(){
+    const base = mk();
+    S = {lists:clone(base), base:clone(base), remote:clone(base), serverVer:3, openedVer:3, offline:false,
+      versions:[{n:1,quando:'24/11 09:12',mac:'Mac de casa',resumo:'Sugestões do Manager (primeira versão)',diff:[]},
+                {n:2,quando:'25/11 16:40',mac:'Mac do escritório',resumo:'1 site mudou',diff:[['r','Brasil · site uol.com.br'],['a','Brasil · site g1.globo.com']]},
+                {n:3,quando:'26/11 14:10',mac:'Mac de casa',resumo:'1 busca mudou',diff:[['a','Brasil · busca "farmácia aberta agora" (com cidade)']]}].map(v=>({...v,snap:clone(base)})),
+      pais:'br', kind:'sites', tipo:'', q:'', drawer:false, modal:null, conflict:null, msg:null, sel:null, log:[], txt:{}};
+  }
+  reset();
+  const cur = () => S.versions[S.versions.length-1];
+  const dirty = () => JSON.stringify(S.lists)!==JSON.stringify(S.base);
+  const ro = () => S.offline;
+  const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const nomeP = k => PAISES[k]||NOVOS[k]||k;
+  function mudancas(a,b){ // de a (base) para b (tela)
+    const out=[];
+    const ks=new Set([...Object.keys(a),...Object.keys(b)]);
+    ks.forEach(k=>{
+      const p=nomeP(k).replace(/^\S+\s/,'');
+      if(!a[k]){ out.push(['a',p+' · lista nova']); }
+      if(!b[k]){ out.push(['r',p+' · lista tirada (volta a usar a geral)']); return; }
+      ['sites','buscas'].forEach(kd=>{
+        const A=(a[k]||{})[kd]||[], B=b[k][kd]; const sing=kd==='sites'?'site':'busca';
+        const f=i=>i.u+'|'+i.t+'|'+(i.c?1:0);
+        const sa=new Set(A.map(f)), sb=new Set(B.map(f));
+        B.filter(i=>!sa.has(f(i))).forEach(i=>out.push(['a',p+' · '+sing+' "'+i.u+'" ('+i.t+(i.c?', com cidade':'')+')']));
+        A.filter(i=>!sb.has(f(i))).forEach(i=>out.push(['r',p+' · '+sing+' "'+i.u+'" ('+i.t+(i.c?', com cidade':'')+')']));
+      });
+    });
+    return out;
+  }
+  function salvar(){
+    S.msg=null;
+    if (S.offline){ S.msg={k:'e',t:'Não consegui falar com o servidor, então as listas não foram salvas. Suas mudanças continuam na tela; confira se a rede privada está ligada e tente de novo.'}; return; }
+    if (S.serverVer>S.openedVer){ const v=cur(); S.conflict={mac:v.mac,quando:v.quando.split(' ')[1],minhas:mudancas(S.base,S.lists)}; return; }
+    const d=mudancas(S.base,S.lists);
+    S.serverVer++; S.openedVer=S.serverVer;
+    S.versions.push({n:S.serverVer,quando:'27/11 '+hora(),mac:'Mac de casa',resumo:d.length+' '+(d.length===1?'mudança':'mudanças'),diff:d,snap:clone(S.lists)});
+    S.base=clone(S.lists); S.remote=clone(S.lists); S.conflict=null; S.msg={k:'i',t:'Salvo. O Mac do escritório pega esta versão na próxima conferência das travas.'};
+    S.log.push('Salvou a versão '+S.serverVer);
+  }
+  let min=12; function hora(){ min+=3; return '10:'+String(min).padStart(2,'0'); }
+  function recarregar(repor){
+    const minhas = mudancas(S.base,S.lists); const mine=clone(S.lists), base=clone(S.base);
+    S.lists=clone(S.remote); S.base=clone(S.remote); S.openedVer=S.serverVer;
+    if (repor){ // repõe por cima: adiciona os novos e tira os tirados
+      for(const k in mine){ if(!S.lists[k]) S.lists[k]=clone(mine[k]); else ['sites','buscas'].forEach(kd=>{
+        const f=i=>i.u; const bb=new Set(((base[k]||{})[kd]||[]).map(f)), mm=new Set(mine[k][kd].map(f));
+        mine[k][kd].filter(i=>!bb.has(i.u)).forEach(i=>{ if(!S.lists[k][kd].some(x=>x.u===i.u)) S.lists[k][kd].push(clone(i)); });
+        S.lists[k][kd]=S.lists[k][kd].filter(i=>!(bb.has(i.u)&&!mm.has(i.u)));
+      }); }
+      S.conflict=null; S.msg={k:'i',t:'Recarregado com a versão do Mac do escritório e as suas mudanças repostas por cima. Confira e salve.'};
+    } else { S.conflict={...S.conflict, recarregado:true, minhas}; }
+  }
+  function outroSalva(){
+    S.remote.br.sites.push({u:'uol.com.br',t:'notícias'});
+    S.serverVer++; const q='10:'+String(++min).padStart(2,'0');
+    S.versions.push({n:S.serverVer,quando:'27/11 '+q,mac:'Mac do escritório',resumo:'1 mudança',diff:[['a','Brasil · site "uol.com.br" (notícias)']],snap:clone(S.remote)});
+    S.log.push('O Mac do escritório salvou a versão '+S.serverVer+' (a tela ainda mostra a '+S.openedVer+')');
+    if(!dirty() && !S.offline){ S.lists=clone(S.remote); S.base=clone(S.remote); S.openedVer=S.serverVer; S.log.push('Sem mudanças na tela: ela pegou a versão nova sozinha'); }
+  }
+
+  // ---------- pedaços comuns
+  function header(){ const v=cur();
+    return `<div class="whd"><span>Configurações</span><span class="muted">✕</span></div>`; }
+  function ultima(){ const v=S.versions.find(x=>x.n===S.openedVer)||cur();
+    return S.offline ? `Cópia guardada neste Mac em ${esc(v.quando)} · só para ler` : `Última mudança: ${esc(v.mac)}, ${esc(v.quando.replace(' ',' às '))}`; }
+  function banners(){
+    let h='';
+    if (S.offline) h+=`<div class="banner w">Sem servidor: você está vendo a última cópia que este Mac guardou (${esc((S.versions.find(x=>x.n===S.openedVer)||cur()).quando)}), só para ler. Confira se a rede privada está ligada.</div>`;
+    if (S.conflict){ const c=S.conflict;
+      h+=`<div class="banner w"><b>${esc(c.mac)} mudou as listas às ${esc(c.quando)} enquanto você editava.</b> ${c.recarregado?'Já está na tela a versão dele. Refaça à mão as suas mudanças:':'Suas mudanças continuam aqui embaixo; recarregue e faça de novo.'}
+        <ul>${c.minhas.map(([k,t])=>`<li>${k==='a'?'+':'−'} ${esc(t)}</li>`).join('')||'<li>(nenhuma)</li>'}</ul>
+        <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">${c.recarregado?`<button class="btn bs bsm" data-a="fechaConf">Pronto, já refiz</button>`:`<button class="btn bs bsm" data-a="recarregar">Recarregar</button><button class="btn bs bsm" data-a="repor">Recarregar e repor as minhas</button>`}<button class="btn bl" data-a="versoes">Ver o que ele mudou</button></div></div>`; }
+    if (S.msg) h+=`<div class="banner ${S.msg.k}">${esc(S.msg.t)}</div>`;
+    return h;
+  }
+  function savebar(){ const n=mudancas(S.base,S.lists).length;
+    return `<div class="savebar"><span>${ro()?'Só para ler':n?`<b>${n}</b> ${n===1?'mudança não salva':'mudanças não salvas'}`:'Nada a salvar'}</span>
+      <span style="display:flex;gap:6px"><button class="btn bs bsm" data-a="descartar" ${n&&!ro()?'':'disabled'}>Descartar</button><button class="btn bp bsm" data-a="salvar" ${n?'':'disabled'}>Salvar</button></span></div>`; }
+  function tipoSel(v,attrs){ return `<select class="input" ${attrs} ${ro()?'disabled':''}>${TIPOS.map(t=>`<option ${t===v?'selected':''}>${t}</option>`).join('')}</select>`; }
+  function lista(){ return S.lists[S.pais]; }
+  function contagem(k){ const l=S.lists[k]; if(!l) return 'usa a geral'; return l.sites.length+' · '+l.buscas.length; }
+  function botoesPais(){ return ro()?'':`<button class="btn bs bsm" data-a="novoPais">+ País</button>`; }
+  function vazio(){ const l=lista(); return l && !l.sites.length && !l.buscas.length; }
+  function vazioBox(){ return `<div class="banner i" style="border:1px solid;border-radius:8px;margin:8px 0">Esta lista está vazia, então os perfis com proxy de ${esc(nomeP(S.pais).replace(/^\S+\s/,''))} seguem usando a geral. <button class="btn bs bsm" data-a="copiarGeral">Copiar da lista geral</button></div>`; }
+
+  // ---------- A: tabela, países à esquerda
+  function viewA(){
+    const l=lista(); const kd=S.kind; const itens=l[kd].map((it,i)=>({it,i})).filter(({it})=>(!S.tipo||it.t===S.tipo)&&(!S.q||it.u.toLowerCase().includes(S.q.toLowerCase())));
+    const baseIt=new Set(((S.base[S.pais]||{})[kd]||[]).map(i=>i.u+'|'+i.t+'|'+(i.c?1:0)));
+    return `${header()}<div class="wbody">
+      <div class="nav"><div class="g">Este Mac</div><div class="i">Geral</div><div class="i">Licença</div>
+        <div class="g">Comum aos dois Macs</div><div class="i">Compartilhamento</div><div class="i sel">Aquecimento</div></div>
+      <div class="pane">${banners()}
+        <div class="phd"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2>Listas de aquecimento <span class="chip" style="cursor:default">igual nos dois Macs</span></h2><button class="btn bs bsm" data-a="versoes">Versões anteriores</button></div>
+          <div class="sub">${ultima()}</div></div>
+        <div class="cols">
+          <div class="clist">${Object.keys(S.lists).map(k=>`<div class="i ${k===S.pais?'sel':''}" data-a="pais" data-k="${k}"><span>${esc(nomeP(k))}</span><span class="n">${contagem(k)}</span></div>`).join('')}
+            <div style="padding:6px 8px">${botoesPais()}</div><div class="muted" style="padding:4px 8px">números: sites · buscas</div></div>
+          <div class="pane"><div class="pc">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><b>${esc(nomeP(S.pais))}</b>${S.pais!=='geral'&&!ro()?`<button class="btn bl" data-a="tirarPais">Tirar a lista deste país</button>`:''}</div>
+            ${vazio()?vazioBox():''}
+            <div class="tabs"><button class="tab ${kd==='sites'?'sel':''}" data-a="kind" data-k="sites">Sites (${l.sites.length})</button><button class="tab ${kd==='buscas'?'sel':''}" data-a="kind" data-k="buscas">Buscas (${l.buscas.length})</button></div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"><input class="input" id="qA" placeholder="Procurar na lista" value="${esc(S.q)}" style="width:180px">
+              <div class="chips"><button class="chip ${!S.tipo?'sel':''}" data-a="tipo" data-k="">todos</button>${TIPOS.map(t=>`<button class="chip ${S.tipo===t?'sel':''}" data-a="tipo" data-k="${t}">${t} ${l[kd].filter(i=>i.t===t).length}</button>`).join('')}</div></div>
+            ${ro()?'':`<div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap"><input class="input" id="novoA" placeholder="${kd==='sites'?'novo site, por exemplo uol.com.br':'nova busca, por exemplo horário da missa'}" style="flex:1;min-width:160px">${tipoSel(S.tipo||TIPOS[0],'id="novoTA"')}${kd==='buscas'?`<label class="muted" style="display:flex;align-items:center;gap:4px"><input type="checkbox" id="novoCA">com cidade</label>`:''}<button class="btn bp bsm" data-a="addA">Adicionar</button></div>`}
+            <table class="t">${itens.map(({it,i})=>`<tr class="${baseIt.has(it.u+'|'+it.t+'|'+(it.c?1:0))?'':'new'}"><td class="w"><input class="input" data-e="u" data-i="${i}" value="${esc(it.u)}" ${ro()?'disabled':''}></td><td>${tipoSel(it.t,`data-e="t" data-i="${i}"`)}</td>${kd==='buscas'?`<td><label class="muted" style="display:flex;gap:4px;white-space:nowrap"><input type="checkbox" data-e="c" data-i="${i}" ${it.c?'checked':''} ${ro()?'disabled':''}>com cidade</label></td>`:''}<td>${ro()?'':`<button class="x-btn" title="Tirar" data-a="tirar" data-i="${i}">✕</button>`}</td></tr>`).join('')||'<tr><td class="muted">Nada aqui.</td></tr>'}</table>
+            <p class="muted">No protótipo há poucos exemplos; a lista de verdade terá ${REAIS[kd]} ${kd}.</p>
+          </div>${savebar()}</div>
+        </div></div></div>${drawer()}${modal()}`;
+  }
+
+  // ---------- B: lado a lado, agrupado por tipo
+  function viewB(){
+    const l=lista();
+    const col=(kd)=>{ const sing=kd==='sites'?'site':'busca';
+      return `<div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><b>${kd==='sites'?'Sites':'Buscas'} (${l[kd].length})</b><span class="muted">de ${REAIS[kd]} na lista de verdade</span></div>
+        ${TIPOS.map(t=>{ const its=l[kd].map((it,i)=>({it,i})).filter(x=>x.it.t===t);
+          return `<details class="grp" ${its.length?'open':''}><summary><span>${t}</span><span class="muted">${its.length}</span></summary><div class="gb"><div class="chips">
+            ${its.map(({it,i})=>`<span class="chip ${it.c?'c-city':''}" style="cursor:default">${esc(it.u)}${kd==='buscas'?` <button class="bl" style="padding:0;font-size:11px" data-a="cidadeB" data-kd="${kd}" data-i="${i}" ${ro()?'disabled':''}>${it.c?'📍 com cidade':'+ cidade'}</button>`:''}${ro()?'':` <span class="x" data-a="tirarB" data-kd="${kd}" data-i="${i}">✕</span>`}</span>`).join('')||'<span class="muted">nenhum</span>'}</div>
+            ${ro()?'':`<div style="display:flex;gap:4px;margin-top:6px"><input class="input" data-novo="${kd}|${t}" placeholder="+ ${sing} de ${t}" style="flex:1"><button class="btn bs bsm" data-a="addB" data-kd="${kd}" data-t="${t}">Adicionar</button></div>`}
+          </div></details>`; }).join('')}</div>`; };
+    return `${header()}<div class="wbody"><div class="pane">${banners()}
+      <div class="phd" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+        <div><h2>Aquecimento › Listas</h2><div class="sub">${ultima()}</div></div>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+          <select class="input" id="paisB">${Object.keys(S.lists).map(k=>`<option value="${k}" ${k===S.pais?'selected':''}>${esc(nomeP(k))} (${contagem(k)})</option>`).join('')}</select>
+          ${botoesPais()}${S.pais!=='geral'&&!ro()?`<button class="btn bl" data-a="tirarPais">Tirar este país</button>`:''}
+          <button class="btn bs bsm" data-a="versoes">Versões anteriores</button>
+          <button class="btn bp bsm" data-a="salvar" ${dirty()?'':'disabled'}>Salvar${dirty()?' ('+mudancas(S.base,S.lists).length+')':''}</button></div></div>
+      <div class="pc">${vazio()?vazioBox():''}<div class="twoc">${col('sites')}${col('buscas')}</div>
+        <p class="muted">📍 = busca com cidade: o aquecimento põe a cidade do proxy no fim.</p></div>
+      </div></div>${drawer()}${modal()}`;
+  }
+
+  // ---------- C: editar como texto
+  function paraTexto(kd){ return lista()[kd].map(i=>kd==='sites'?`${i.u}  # ${i.t}`:`${i.c?i.u+' {cidade}':i.u}  # ${i.t}`).join('\n'); }
+  function lerTexto(kd,txt){ const itens=[], erros=[];
+    txt.split('\n').forEach((ln,n)=>{ if(!ln.trim()) return; const m=ln.split('#'); const u=m[0].trim(), t=(m[1]||'').trim();
+      if(!TIPOS.includes(t)){ erros.push(`linha ${n+1}: "${t||'(sem tipo)'}" não é um tipo; use um de: ${TIPOS.join(', ')}`); return; }
+      if(kd==='buscas'){ const c=u.includes('{cidade}'); itens.push({u:u.replace('{cidade}','').trim(),t,c}); } else itens.push({u,t}); });
+    return {itens,erros}; }
+  function viewC(){
+    const ks=Object.keys(S.lists);
+    const box=(kd)=>{ const key=S.pais+'|'+kd; const v=S.txt[key]!=null?S.txt[key]:paraTexto(kd); const e=S.txt[key]!=null?lerTexto(kd,v).erros:[];
+      return `<div style="display:flex;flex-direction:column;min-height:0"><div style="display:flex;justify-content:space-between"><b>${kd==='sites'?'Sites':'Buscas'}</b><span class="muted">${v.split('\n').filter(x=>x.trim()).length} linhas (de verdade: ${REAIS[kd]})</span></div>
+        <textarea class="code" data-txt="${key}" ${ro()?'readonly':''} spellcheck="false">${esc(v)}</textarea>${e.length?`<div class="errs">${e.map(esc).join('<br>')}</div>`:''}</div>`; };
+    return `${header()}<div class="wbody"><div class="pane">${banners()}
+      <div class="phd" style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><div><h2>Listas de aquecimento</h2><div class="sub">${ultima()}</div></div>
+        <div style="display:flex;gap:6px"><button class="btn bs bsm" data-a="versoes">Versões anteriores</button></div></div>
+      <div class="ctabs">${ks.map(k=>`<div class="${k===S.pais?'sel':''}" data-a="pais" data-k="${k}">${esc(nomeP(k))}</div>`).join('')}${ro()?'':`<div data-a="novoPais">+ País</div>`}</div>
+      <div class="pc" style="display:flex;flex-direction:column">
+        <div class="muted" style="margin-bottom:6px">Uma linha por item. Depois de <code>#</code> vem o tipo. Nas buscas, <code>{cidade}</code> marca onde entra a cidade. Dá para colar várias linhas de uma vez. ${S.pais!=='geral'&&!ro()?`<button class="btn bl" data-a="tirarPais">Tirar a lista deste país</button>`:''}</div>
+        ${vazio()?vazioBox():''}
+        <div class="twoc" style="flex:1">${box('sites')}${box('buscas')}</div></div>
+      ${savebar()}</div></div>${drawer()}${modal()}`;
+  }
+
+  function drawer(){ if(!S.drawer) return '';
+    return `<div class="drawer"><div class="dh"><span>Versões anteriores</span><button class="x-btn" data-a="fechaDrawer">✕</button></div><div class="db">
+      <p class="muted">Cada salvar é uma versão, guardada para sempre. "Voltar a esta" grava uma versão nova igual a ela; nada é apagado.</p>
+      ${S.versions.slice().reverse().map(v=>`<div class="ver ${v.n===S.serverVer?'cur':''}"><div style="display:flex;justify-content:space-between;gap:6px"><b>Versão ${v.n}</b><span class="d">${esc(v.quando)} · ${esc(v.mac)}</span></div>
+        <div>${esc(v.resumo)}${v.n===S.serverVer?' · <span style="color:var(--ok)">a atual</span>':''}</div>
+        ${v.diff.length?`<div class="diff">${v.diff.slice(0,6).map(([k,t])=>`<div class="${k}">${k==='a'?'+':'−'} ${esc(t)}</div>`).join('')}</div>`:''}
+        ${v.n!==S.serverVer&&!ro()?`<div style="margin-top:6px"><button class="btn bs bsm" data-a="voltar" data-n="${v.n}">Voltar a esta</button></div>`:''}</div>`).join('')}
+    </div></div>`; }
+  function modal(){ const m=S.modal; if(!m) return '';
+    if(m.t==='novoPais') return `<div class="overlay"><div class="modal"><h3>Lista de um país novo</h3><p class="muted">Enquanto o país não tem lista, os perfis com proxy dele usam a geral.</p>
+      <select class="input" id="novoPaisSel">${Object.keys(NOVOS).filter(k=>!S.lists[k]).map(k=>`<option value="${k}">${NOVOS[k]}</option>`).join('')}</select>
+      <div class="foot"><button class="btn bs" data-a="fechaModal">Cancelar</button><button class="btn bp" data-a="okPais">Criar a lista</button></div></div></div>`;
+    if(m.t==='tirarPais') return `<div class="overlay"><div class="modal"><h3>Tirar a lista de ${esc(nomeP(S.pais).replace(/^\S+\s/,''))}?</h3><p>Os perfis com proxy desse país voltam a usar a lista geral. A lista continua guardada em "Versões anteriores".</p>
+      <div class="foot"><button class="btn bs" data-a="fechaModal">Cancelar</button><button class="btn bp" data-a="okTirarPais">Tirar a lista</button></div></div></div>`;
+    if(m.t==='voltar') return `<div class="overlay"><div class="modal"><h3>Voltar à versão ${m.n}?</h3><p>As listas ficam como na versão ${m.n} e isso é gravado como uma versão nova. A versão de agora continua guardada.</p>
+      <div class="foot"><button class="btn bs" data-a="fechaModal">Cancelar</button><button class="btn bp" data-a="okVoltar">Voltar a esta</button></div></div></div>`;
+    return ''; }
+
+  function render(){
+    const app=document.getElementById('app');
+    app.innerHTML = variant==='A'?viewA():variant==='B'?viewB():viewC();
+    document.getElementById('vlabel').textContent = variant+' ('+NAMES[variant]+')';
+    document.getElementById('state').textContent =
+      'Rascunho: '+variant+' · '+NAMES[variant]+'\nServidor: versão '+S.serverVer+(S.offline?' (fora do alcance)':'')+' · a tela abriu a versão '+S.openedVer+
+      '\nMudanças não salvas: '+mudancas(S.base,S.lists).length+(S.conflict?' · aviso do outro Mac na tela':'')+
+      '\n'+S.log.slice(-4).join('\n');
+  }
+  function aplicaTextoC(){ // C: o texto vira itens antes de salvar ou trocar de país
+    for(const key in S.txt){ const [p,kd]=key.split('|'); if(!S.lists[p]) continue; const r=lerTexto(kd,S.txt[key]); if(!r.erros.length){ S.lists[p][kd]=r.itens; } }
+  }
+  const app=document.getElementById('app');
+  app.addEventListener('click', ev=>{
+    const t=ev.target.closest('[data-a]'); if(!t||t.disabled) return; const a=t.dataset.a; const l=lista();
+    if (variant==='C') aplicaTextoC();
+    if(a==='pais'){ S.pais=t.dataset.k; S.tipo=''; S.q=''; }
+    else if(a==='kind'){ S.kind=t.dataset.k; S.tipo=''; }
+    else if(a==='tipo'){ S.tipo=t.dataset.k; }
+    else if(a==='addA'){ const u=document.getElementById('novoA').value.trim(); if(!u) return; const it={u,t:document.getElementById('novoTA').value}; if(S.kind==='buscas') it.c=document.getElementById('novoCA').checked; l[S.kind].unshift(it); }
+    else if(a==='tirar'){ l[S.kind].splice(+t.dataset.i,1); }
+    else if(a==='addB'){ const inp=app.querySelector(`[data-novo="${t.dataset.kd}|${t.dataset.t}"]`); const u=inp.value.trim(); if(!u) return; const it={u,t:t.dataset.t}; if(t.dataset.kd==='buscas') it.c=false; l[t.dataset.kd].push(it); }
+    else if(a==='tirarB'){ l[t.dataset.kd].splice(+t.dataset.i,1); }
+    else if(a==='cidadeB'){ const it=l[t.dataset.kd][+t.dataset.i]; it.c=!it.c; }
+    else if(a==='salvar'){ const errs=Object.keys(S.txt).some(k=>lerTexto(k.split('|')[1],S.txt[k]).erros.length); if(variant==='C'&&errs){ S.msg={k:'e',t:'Há linhas sem tipo válido; corrija antes de salvar.'}; } else { salvar(); if(!S.conflict) S.txt={}; } }
+    else if(a==='descartar'){ S.lists=clone(S.base); S.txt={}; S.msg=null; }
+    else if(a==='recarregar'){ recarregar(false); S.txt={}; }
+    else if(a==='repor'){ recarregar(true); S.txt={}; }
+    else if(a==='fechaConf'){ S.conflict=null; }
+    else if(a==='versoes'){ S.drawer=true; }
+    else if(a==='fechaDrawer'){ S.drawer=false; }
+    else if(a==='voltar'){ S.modal={t:'voltar',n:+t.dataset.n}; }
+    else if(a==='okVoltar'){ const n=S.modal.n; S.modal=null; S.drawer=false; const snap=S.versions.find(v=>v.n===n).snap; const d=mudancas(S.remote,snap); S.lists=clone(snap); S.base=clone(snap); S.remote=clone(snap); S.txt={}; S.conflict=null; S.log.push('Voltou à versão '+n); S.serverVer++; S.openedVer=S.serverVer; S.versions.push({n:S.serverVer,quando:'27/11 '+hora(),mac:'Mac de casa',resumo:'Volta à versão '+n,diff:d,snap:clone(snap)}); S.msg={k:'i',t:'Voltou à versão '+n+'. Isso virou a versão '+S.serverVer+'.'}; }
+    else if(a==='novoPais'){ S.modal={t:'novoPais'}; }
+    else if(a==='okPais'){ const k=document.getElementById('novoPaisSel').value; if(k){ S.lists[k]={sites:[],buscas:[]}; S.pais=k; } S.modal=null; }
+    else if(a==='copiarGeral'){ S.lists[S.pais]=clone(S.lists.geral); delete S.txt[S.pais+'|sites']; delete S.txt[S.pais+'|buscas']; }
+    else if(a==='tirarPais'){ S.modal={t:'tirarPais'}; }
+    else if(a==='okTirarPais'){ delete S.lists[S.pais]; S.pais='geral'; S.modal=null; }
+    else if(a==='fechaModal'){ S.modal=null; }
+    render();
+  });
+  app.addEventListener('change', ev=>{
+    const e=ev.target; if(e.id==='paisB'){ S.pais=e.value; render(); return; }
+    const i=e.dataset.i, k=e.dataset.e; if(k==null) return; const it=lista()[S.kind][+i];
+    if(k==='u') it.u=e.value; if(k==='t') it.t=e.value; if(k==='c') it.c=e.checked; render();
+  });
+  app.addEventListener('input', ev=>{
+    const e=ev.target;
+    if(e.id==='qA'){ S.q=e.value; render(); const n=document.getElementById('qA'); n.focus(); n.setSelectionRange(n.value.length,n.value.length); }
+    if(e.dataset.txt){ S.txt[e.dataset.txt]=e.value; aplicaTextoC(); const pos=e.selectionStart; render(); const n=app.querySelector(`[data-txt="${e.dataset.txt}"]`); n.focus(); n.setSelectionRange(pos,pos); }
+  });
+  document.getElementById('simOutro').addEventListener('click', ()=>{ outroSalva(); render(); });
+  document.getElementById('simOff').addEventListener('click', ()=>{ S.offline=!S.offline; S.msg=null; S.log.push(S.offline?'Servidor fora do alcance':'Servidor de volta'); render(); });
+  document.getElementById('simReset').addEventListener('click', ()=>{ reset(); render(); });
+  function go(d){ variant = KEYS[(KEYS.indexOf(variant)+d+KEYS.length)%KEYS.length]; const u=new URL(location.href); u.searchParams.set('variant',variant); history.replaceState(null,'',u); S.modal=null; S.drawer=false; S.txt={}; render(); }
+  document.getElementById('prev').addEventListener('click', ()=>go(-1));
+  document.getElementById('next').addEventListener('click', ()=>go(1));
+  document.addEventListener('keydown', ev=>{ if (ev.target.closest('input,textarea,select,[contenteditable]')) return; if(ev.key==='ArrowLeft')go(-1); if(ev.key==='ArrowRight')go(1); });
+  render();
+
+  // ----- perguntas: cada formulário manda uma resposta (substitui a anterior da mesma pergunta)
+  document.querySelectorAll('form.qf').forEach(f=>{
+    f.addEventListener('submit', ev=>{
+      ev.preventDefault();
+      const fd = new FormData(f); const q = f.dataset.lavishQuestion; const titulo = f.querySelector('h3').textContent;
+      const r = fd.get('resposta') || ''; const n = (fd.get('nota')||'').trim();
+      const st = f.querySelector('.st');
+      if (!r && !n){ st.textContent='marque uma opção ou escreva algo'; return; }
+      const texto = titulo + ' → ' + (r||'(sem opção)') + (n? ' · nota: '+n : '');
+      if (window.lavish && window.lavish.queuePrompt){
+        window.lavish.queuePrompt(texto, {tag:'choice', text:texto, element:f, queueKey:q, data:{question:q, answer:r, note:n, variant_vista:variant}});
+        st.textContent='guardada (falta apertar Send to Agent)'; st.classList.add('q');
+      } else { st.textContent='abra esta página pelo Lavish para enviar'; }
+    });
+  });
+})();
+</script>
+</body>
+</html>
